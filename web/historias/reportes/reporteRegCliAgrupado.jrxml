@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="40" bottomMargin="40" uuid="9f7fc654-ee1d-4b56-916d-b168aa7d7a43">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="16"/>
+	<property name="ireport.y" value="359"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["/media/santos/INFORMACION/INFORMACION OPENMEDICAL/CODIGO NETBEANS/OPENMEDICAL/web/"]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="apellidos" class="java.lang.String">
+		<fieldDescription><![CDATA[apellidos]]></fieldDescription>
+	</field>
+	<field name="class" class="java.lang.Class">
+		<fieldDescription><![CDATA[class]]></fieldDescription>
+	</field>
+	<field name="colegio" class="java.lang.String">
+		<fieldDescription><![CDATA[colegio]]></fieldDescription>
+	</field>
+	<field name="dirTelEmpresa" class="java.lang.String">
+		<fieldDescription><![CDATA[dirTelEmpresa]]></fieldDescription>
+	</field>
+	<field name="direccion" class="java.lang.String">
+		<fieldDescription><![CDATA[direccion]]></fieldDescription>
+	</field>
+	<field name="edad" class="java.lang.String">
+		<fieldDescription><![CDATA[edad]]></fieldDescription>
+	</field>
+	<field name="eps" class="java.lang.String">
+		<fieldDescription><![CDATA[eps]]></fieldDescription>
+	</field>
+	<field name="escolaridad" class="java.lang.String">
+		<fieldDescription><![CDATA[escolaridad]]></fieldDescription>
+	</field>
+	<field name="estadoCivil" class="java.lang.String">
+		<fieldDescription><![CDATA[estadoCivil]]></fieldDescription>
+	</field>
+	<field name="fechaNacimiento" class="java.lang.String">
+		<fieldDescription><![CDATA[fechaNacimiento]]></fieldDescription>
+	</field>
+	<field name="fechaRegistro" class="java.lang.String">
+		<fieldDescription><![CDATA[fechaRegistro]]></fieldDescription>
+	</field>
+	<field name="firmaMedico" class="java.lang.String">
+		<fieldDescription><![CDATA[firmaMedico]]></fieldDescription>
+	</field>
+	<field name="genero" class="java.lang.String">
+		<fieldDescription><![CDATA[genero]]></fieldDescription>
+	</field>
+	<field name="identificacion" class="java.lang.String">
+		<fieldDescription><![CDATA[identificacion]]></fieldDescription>
+	</field>
+	<field name="lateridad" class="java.lang.String">
+		<fieldDescription><![CDATA[lateridad]]></fieldDescription>
+	</field>
+	<field name="listaDatosAdicionales" class="java.util.List">
+		<fieldDescription><![CDATA[listaDatosAdicionales]]></fieldDescription>
+	</field>
+	<field name="logoEmpresa" class="java.lang.String">
+		<fieldDescription><![CDATA[logoEmpresa]]></fieldDescription>
+	</field>
+	<field name="lugarNacimiento" class="java.lang.String">
+		<fieldDescription><![CDATA[lugarNacimiento]]></fieldDescription>
+	</field>
+	<field name="medico" class="java.lang.String">
+		<fieldDescription><![CDATA[medico]]></fieldDescription>
+	</field>
+	<field name="nombres" class="java.lang.String">
+		<fieldDescription><![CDATA[nombres]]></fieldDescription>
+	</field>
+	<field name="numeroAutorizacion" class="java.lang.String">
+		<fieldDescription><![CDATA[numeroAutorizacion]]></fieldDescription>
+	</field>
+	<field name="ocupacion" class="java.lang.String">
+		<fieldDescription><![CDATA[ocupacion]]></fieldDescription>
+	</field>
+	<field name="servicio" class="java.lang.String">
+		<fieldDescription><![CDATA[servicio]]></fieldDescription>
+	</field>
+	<field name="tel" class="java.lang.String">
+		<fieldDescription><![CDATA[tel]]></fieldDescription>
+	</field>
+	<field name="tituloRegistro" class="java.lang.String">
+		<fieldDescription><![CDATA[tituloRegistro]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="438" splitType="Stretch">
+			<frame>
+				<reportElement uuid="8c3c6500-b0ac-4237-ab34-fe5e78823fd1" positionType="Float" x="0" y="0" width="515" height="59"/>
+				<rectangle radius="10">
+					<reportElement uuid="3dc8551e-a7ac-4d75-b1d2-d35c2605e1b1" positionType="Float" x="0" y="0" width="515" height="59"/>
+				</rectangle>
+				<image scaleImage="FillFrame">
+					<reportElement uuid="9c3bbc6e-8311-410d-a87e-f822b43f3dd0" positionType="Float" x="7" y="3" width="83" height="53"/>
+					<imageExpression><![CDATA[$F{logoEmpresa}]]></imageExpression>
+				</image>
+				<textField>
+					<reportElement uuid="fb662c46-f8d4-408e-9f24-dd9606634250" positionType="Float" x="90" y="0" width="425" height="59"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Monospaced" size="20" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{tituloRegistro}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="8c3c6500-b0ac-4237-ab34-fe5e78823fd1" positionType="Float" x="0" y="70" width="515" height="20"/>
+				<rectangle radius="10">
+					<reportElement uuid="3dc8551e-a7ac-4d75-b1d2-d35c2605e1b1" positionType="Float" x="0" y="0" width="515" height="20"/>
+				</rectangle>
+				<staticText>
+					<reportElement uuid="2a4d0ec0-175d-4830-a598-d99e920b7d34" positionType="Float" x="7" y="0" width="508" height="20"/>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Monospaced" size="12" isBold="true"/>
+					</textElement>
+					<text><![CDATA[DATOS IDENTIFICACION]]></text>
+				</staticText>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="0" y="101" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="2" y="0" width="249" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{nombres}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="0" y="113" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="2" y="0" width="249" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{apellidos}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="0" y="125" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="2" y="0" width="249" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{identificacion}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="0" y="137" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="2" y="0" width="249" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{edad}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="0" y="161" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="2" y="0" width="249" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fechaNacimiento}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="0" y="173" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="2" y="0" width="249" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{lugarNacimiento}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="0" y="185" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="2" y="0" width="249" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fechaRegistro}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" mode="Transparent" x="0" y="197" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="2" y="0" width="249" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{eps}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="0" y="209" width="515" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="2" y="0" width="513" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{servicio}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="264" y="113" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="251" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{colegio}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="264" y="125" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="251" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{escolaridad}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="264" y="137" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="251" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{estadoCivil}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="264" y="149" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="251" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{ocupacion}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="264" y="161" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="251" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{direccion}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="264" y="173" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="251" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{tel}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="264" y="185" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="251" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{numeroAutorizacion}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<subreport isUsingCache="false">
+				<reportElement uuid="a0e8e20e-2442-4b58-afb9-036a7cb529ac" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="232" width="515" height="24"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{listaDatosAdicionales})]]></dataSourceExpression>
+				<subreportExpression><![CDATA["./reporteSeccionRegCliAgrupado.jasper"]]></subreportExpression>
+			</subreport>
+			<frame>
+				<reportElement uuid="7e282ba6-0166-4fd4-9f64-40a43a1198a1" positionType="Float" x="307" y="256" width="208" height="172"/>
+				<rectangle radius="10">
+					<reportElement uuid="22956a34-3b7e-42bf-a0a3-57511771ba4f" positionType="Float" x="0" y="0" width="208" height="170"/>
+				</rectangle>
+				<image scaleImage="FillFrame" onErrorType="Blank">
+					<reportElement uuid="ecf6f189-b074-48b3-9cb1-3678041be8f0" positionType="Float" x="3" y="7" width="202" height="104"/>
+					<imageExpression><![CDATA[$F{firmaMedico}]]></imageExpression>
+				</image>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="4fff96e6-4e58-42b9-a540-0dac4ef7ae7b" positionType="Float" x="0" y="118" width="208" height="52"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="html"/>
+					<textFieldExpression><![CDATA[$F{medico}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement uuid="f4f777cf-14cf-4324-84c6-6dca31fd7672" x="0" y="115" width="208" height="1"/>
+				</line>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="2" y="149" width="249" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="249" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{genero}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="264" y="101" width="251" height="12"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="251" height="12"/>
+					<textElement markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{lateridad}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="26">
+			<frame>
+				<reportElement uuid="80c48727-2be9-4b8f-ae92-9fbe6a16dbdf" positionType="Float" x="0" y="0" width="515" height="14"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="a520721a-4d21-4583-941d-c71961057013" positionType="Float" stretchType="RelativeToTallestObject" x="2" y="0" width="513" height="14"/>
+					<textElement textAlignment="Center" markup="html">
+						<font fontName="SansSerif" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{dirTelEmpresa}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</pageFooter>
+</jasperReport>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="515" pageHeight="842" columnWidth="515" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="9f7fc654-ee1d-4b56-916d-b168aa7d7a43">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="contenido" class="java.lang.String">
+		<fieldDescription><![CDATA[contenido]]></fieldDescription>
+	</field>
+	<field name="titulo" class="java.lang.String">
+		<fieldDescription><![CDATA[titulo]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="38" splitType="Stretch">
+			<frame>
+				<reportElement uuid="8c3c6500-b0ac-4237-ab34-fe5e78823fd1" positionType="Float" x="0" y="0" width="515" height="20"/>
+				<line>
+					<reportElement uuid="8e59df7c-e49e-45f9-84a2-f42398f999fb" x="0" y="0" width="515" height="1"/>
+				</line>
+			</frame>
+			<frame>
+				<reportElement uuid="01ec8ce3-24e3-4b1d-9500-616fc01557dc" positionType="Float" x="0" y="1" width="515" height="37"/>
+				<textField isStretchWithOverflow="true">
+					<reportElement uuid="eec7b78f-0c4d-466e-b271-94b26a8d1ff3" positionType="Float" stretchType="RelativeToTallestObject" x="0" y="0" width="515" height="37"/>
+					<box topPadding="10" leftPadding="0" bottomPadding="10" rightPadding="0"/>
+					<textElement markup="html">
+						<font fontName="Monospaced" size="9"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{contenido}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</detail>
+</jasperReport>
