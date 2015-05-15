@@ -228,87 +228,115 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
             imprimirMensaje("Error", "Elija fecha inicial", FacesMessage.SEVERITY_ERROR);
             return;
         }
-        if (fechaFinal == null) {
-            fechaFinal = fechaInicial;
+        if (pacienteSeleccionado.getIdAdministradora().getCodigoAdministradora().equals("1")) {//para paciente particular se limita las citas del paquete mediante la fecha final
+            if (fechaFinal == null) {
+                imprimirMensaje("Error", "Elija fecha final", FacesMessage.SEVERITY_ERROR);
+                return;
+            } else if (fechaFinal.before(fechaInicial)) {
+                imprimirMensaje("Error", "verifique fecha final", FacesMessage.SEVERITY_ERROR);
+                return;
+            }
         }
         DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         Date fecha = new Date();
         Date fechaActual = formatter.parse(formatter.format(fecha));
-        if (fechaInicial.before(fechaActual) || fechaFinal.before(fechaActual)) {
-            imprimirMensaje("Error", "El periodo escogido incluye fechas previas", FacesMessage.SEVERITY_ERROR);
-            return;
-        }        
-        if (fechaFinal.before(fechaInicial) || fechaInicial.after(fechaFinal)) {
-            RequestContext.getCurrentInstance().update("idFormDetallesCita");
-            imprimirMensaje("Error", "Verifique las fechas", FacesMessage.SEVERITY_ERROR);
+        if (fechaInicial.before(fechaActual)) {
+            imprimirMensaje("Error", "La fecha inicial es previa a la actual", FacesMessage.SEVERITY_ERROR);
             return;
         }
-        boolean ban = true;
+        boolean completo = false;//variable para salir del ciclo
+        boolean ban = true;//bandera que es false cuando no es posible seleccionar turnos para todos los servicios del paquete
         boolean ban2 = true;//bandera para controlar que los turnos seleccionados esta dentro de las sesiones autorizadas
         List<CitPaqDetalle> citPaqDetalles = detalleFacade.buscarPorMaestro(idPaquete);
-        List<Date> fechas = interseccionDiasPaqueteConAgendaPrestador();
+//        List<Date> fechas = interseccionDiasPaqueteConAgendaPrestador();
+        CitPaqMaestro paqMaestroSeleccionado = maestroFacade.find(idPaquete);
+        char[] aux = paqMaestroSeleccionado.getDias().toCharArray();
+        List<Integer> diasSemana = new ArrayList();
+        for (char dia : aux) {
+            Integer d = Integer.parseInt(String.valueOf(dia));
+            diasSemana.add(d);
+        }
 //        listaItervaloOcupado.clear();
-        for (Date f : fechas) {//recorre las fechas de las citas ->depende de los dias del paquete
-            listaItervaloOcupado.clear();
-            for (CitPaqDetalle detalle : citPaqDetalles) {//recorre entre los prestadores que contiene el paquete elegido
-                CitTurnos turno;
-                Date horaCita;
-                if (listaItervaloOcupado.isEmpty()) {//si es la primera cita en el dia
-                    if (horaInicial == null) {//si no se ha elegido la hora inicial, se elige el primer turno disponible que posea el prestador
-                        Object[] hora = turnosFacade.determinarHorainicial(detalle.getIdPrestador().getIdUsuario(), f, sede);
-                        if (hora != null) {//se encontro hora para la primera cita
-                            listaItervaloOcupado.add(new IntervaloHoras((Date) hora[0], (Date) hora[1]));
-                            horaCita = (Date) hora[0];
-                            turno = turnosFacade.buscarTurnoDisponiblePrestadorFecha(detalle.getIdPrestador().getIdUsuario(), f, horaCita, sede);
-                        } else {
-                            turno = null;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaInicial);
+        int totalServicios = listaCtrlSesionesAutorizadas.size();
+        int contador = 0;
+        while (completo == false) {//bucle que hace el recorrido entre fechas
+            if (diasNoLaboralesFacade.FindDiaNoLaboral(id_sedes, calendar.getTime()) == null && diasSemana.contains(calendar.get(Calendar.DAY_OF_WEEK) - 1)) {//valida que la fecha sea un dia laboral para la sede y que el dia actual del recorrido este seleccionado en el paquete
+                listaItervaloOcupado.clear();
+                for (CitPaqDetalle detalle : citPaqDetalles) {//recorre entre los servicios que contiene el paquete elegido
+                    CitTurnos turno;
+                    Date horaCita;
+                    if (listaItervaloOcupado.isEmpty()) {//si es la primera cita en el dia
+                        if (horaInicial == null) {//si no se ha elegido la hora inicial, se elige el primer turno disponible que posea el prestador
+                            Object[] hora = turnosFacade.determinarHorainicial(detalle.getIdPrestador().getIdUsuario(), calendar.getTime(), sede);
+                            if (hora != null) {//se encontro hora para la primera cita
+                                listaItervaloOcupado.add(new IntervaloHoras((Date) hora[0], (Date) hora[1]));
+                                horaCita = (Date) hora[0];
+                                turno = turnosFacade.buscarTurnoDisponiblePrestadorFecha(detalle.getIdPrestador().getIdUsuario(), calendar.getTime(), horaCita, sede);
+                            } else {
+                                turno = null;
+                            }
+                        } else {//se ha especificado la hora de las citas
+                            turno = turnosFacade.buscarTurnoDisponiblePrestadorFecha(detalle.getIdPrestador().getIdUsuario(), calendar.getTime(), horaInicial, sede);
+                            if (turno != null) {
+                                listaItervaloOcupado.add(new IntervaloHoras(turno.getHoraIni(), turno.getHoraFin()));
+                            }
                         }
-                    } else {//se ha especificado la hora de las citas
-                        turno = turnosFacade.buscarTurnoDisponiblePrestadorFecha(detalle.getIdPrestador().getIdUsuario(), f, horaInicial, sede);
-                        if (turno != null) {
-                            listaItervaloOcupado.add(new IntervaloHoras(turno.getHoraIni(), turno.getHoraFin()));
-                        }
+                    } else {//no es la primera cita en el dia
+                        turno = determinarCitaSiguiente(detalle.getIdPrestador().getIdUsuario(), calendar.getTime());
                     }
-                } else {//no es la primera cita en el dia
-//                    boolean hayHoraInicial = horaInicial != null;
-                    turno = determinarCitaSiguiente(detalle.getIdPrestador().getIdUsuario(), f);
-                }
-                if (turno == null) {
-                    ban = false;
-                    permitidoCrearCitas = false;
-                    listaTurnos.clear();
-                    RequestContext.getCurrentInstance().update("idFormDetallesCita");
-                    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-                    FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No es posible asignar turnos a todos los servicios del paquete en la fecha " + sdf.format(f)));
-                    break;
-                } else {
-//                    condicional que valida que los turnos seleccionados correspondan a las sesiones autorizadas si el paciente no es particular
-                    if (pacienteSeleccionado.getIdAdministradora().getCodigoAdministradora().equals("1")) {
-                        listaTurnos.add(turno);
+                    if (turno == null) {//no se econtro turno disponible
+                        eliminarTurnosPorFecha(calendar.getTime());//elimina los turnos seleccionados  previamente donde la fecha corresponda a la del recorrido ya que debe poderse seleccionar turnos para todos los servicios del paquete.
+                        if (turnosFacade.totalTurnosDisponiblesApartirFecha(detalle.getIdPrestador().getIdUsuario(), sede, calendar.getTime()) == 0) {//si el prestador actual no tiene turnos disponibles sale del ciclo
+                            ban = false;
+                            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Informacion", detalle.getIdPrestador().nombreCompleto().toUpperCase() + " no tiene agenda a partir de la fecha " + sdf.format(calendar.getTime())));
+                        }
+                        break;
                     } else {
-                        if (validarAutorizacionTurnos(detalle.getIdServicio().getIdServicio(), f)) {
+//                    condicional que valida que los turnos seleccionados correspondan a las sesiones autorizadas si el paciente no es particular
+                        if (pacienteSeleccionado.getIdAdministradora().getCodigoAdministradora().equals("1")) {
                             listaTurnos.add(turno);
                         } else {
-                            ban = !listaTurnos.isEmpty();
-                            ban2 = false;
-                            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Informacion", "El paciente no posee autorizacion vigente o las sesiones autorizadas son insuficientes para cumplir completamente con el paquete dentro del periodo seleccionado"));
-                            break;
+                            if (validarAutorizacionTurnos(detalle.getIdServicio().getIdServicio(), calendar.getTime())) {
+                                listaTurnos.add(turno);
+                            } else {
+                                ban = !listaTurnos.isEmpty();
+                                ban2 = false;
+                                break;
+                            }
                         }
                     }
                 }
+                if (!ban) {
+                    break;
+                }
+                if (!ban2) {
+                    break;
+                }
             }
-            if (!ban) {
-                break;
+//            recorre la lista de autorizaciones para cada servicio del paquete y verifica que el contador de sesiones sea igual a las sesiones autorizadas
+            for (CtrlSesionesAutorizadas ctrlSesionAutorizada : listaCtrlSesionesAutorizadas) {
+                if (ctrlSesionAutorizada.getContadorSesiones() == ctrlSesionAutorizada.getSesionesAutorizadas()) {
+                    contador++;
+                }
             }
-            if (!ban2) {
-                break;
+//            si las sesiones autorizadas de los servicios se cumplen completamente. Se saldra del ciclo while
+            if (!pacienteSeleccionado.getIdAdministradora().getCodigoAdministradora().equals("1")) {
+                if (contador == totalServicios) {
+                    completo = true;
+                }
             }
-//            ordenarListaTurnos();
+            calendar.add(Calendar.DATE, 1);
+            if (fechaFinal != null && calendar.getTime().after(fechaFinal)) {
+                completo = true;
+            }
         }
-        if (!ban) {
+        if (listaTurnos.isEmpty()) {
             setRendComponente(false);
 
-            listaTurnos = new ArrayList();
+            listaTurnos.clear();
 //            imprimirMensaje("Error", "Algun prestador no tiene agenda dentro ese periodo o no la cumple totalmente", FacesMessage.SEVERITY_ERROR);
         } else {
             permitidoCrearCitas = true;
@@ -325,7 +353,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
         for (CtrlSesionesAutorizadas ctrlSesionAutorizada : listaCtrlSesionesAutorizadas) {
             if (ctrlSesionAutorizada.isAutorizacionRequerida()) {
                 if (servicio == ctrlSesionAutorizada.getIdServicio()) {
-                    if ((ctrlSesionAutorizada.getContadorSesiones() < ctrlSesionAutorizada.getSesionesAutorizadas()) && ctrlSesionAutorizada.isAutorizacionRequerida()) {
+                    if ((ctrlSesionAutorizada.getContadorSesiones() < ctrlSesionAutorizada.getSesionesAutorizadas())) {
                         ban = true;
                         ctrlSesionAutorizada.setContadorSesiones(ctrlSesionAutorizada.getContadorSesiones() + 1);
                     }
@@ -338,25 +366,21 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
         }
 //        si la eleccion de un turno para un servicio supera a las sesiones autorizadas se eliminan los turnos para aquella fecha
         if (!ban) {
-            List<CitTurnos> listaAuxiliar = new ArrayList();
-            for (CitTurnos turno : listaTurnos) {
-                if (turno.getFecha().equals(fecha)) {
-                    listaAuxiliar.add(turno);
-                }
-            }
-            listaTurnos.removeAll(listaAuxiliar);
-//            for(CitTurnos turno : listaAuxiliar){
-//                listaTurnos.remove(turno);
-//            }
+            eliminarTurnosPorFecha(fecha);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Informacion", "El total de sesiones autorizadas no permiten cumplir completamente con los servicios del paquete a partir de la fecha " + sdf.format(fecha)));
         }
         return ban;
     }
 
-//vuelve a iniciar los contadores de la lista de control de sesiones
-    private void restablecerContadoresListaCtrl() {
-        for (CtrlSesionesAutorizadas ctrlSesionAutorizada : listaCtrlSesionesAutorizadas) {
-            ctrlSesionAutorizada.setContadorSesiones(0);
+    private void eliminarTurnosPorFecha(Date fecha) {
+        List<CitTurnos> listaAuxiliar = new ArrayList();
+        for (CitTurnos turno : listaTurnos) {
+            if (turno.getFecha().equals(fecha)) {
+                listaAuxiliar.add(turno);
+            }
         }
+        listaTurnos.removeAll(listaAuxiliar);
     }
 
 //    private void ordenarListaTurnos() {
@@ -374,61 +398,18 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
 //llena una lista con la informacion de los servicios del paquete y dado el caso de que el servicio requiera autorizacion y el paciente posea alguna se incluira a dicha lista
     private void llenarListaCtrlSesionesAutorizadas() {
         listaCtrlSesionesAutorizadas.clear();
-        CitPaqMaestro paqMaestroSeleccionado = maestroFacade.find(idPaquete);
-        for (CitPaqDetalle paqDetalle : paqMaestroSeleccionado.getCitPaqDetalleList()) {
+        for (AutorizacionReport autorizacion : listadoAutorizado) {
             CtrlSesionesAutorizadas ctrlSesionesAutorizadas = new CtrlSesionesAutorizadas();
-            ctrlSesionesAutorizadas.setIdServicio(paqDetalle.getIdServicio().getIdServicio());
-            if (paqDetalle.getIdServicio().getAutorizacion()) {
+            ctrlSesionesAutorizadas.setIdServicio(autorizacion.getIdServicio());
+            if (autorizacion.isRequiereAutorizacion()) {
                 ctrlSesionesAutorizadas.setAutorizacionRequerida(true);
-                CitAutorizaciones autorizacion = determinarAutorizacionServicio(paqDetalle.getIdServicio().getIdServicio());
-                if (autorizacion != null) {
-                    for (CitAutorizacionesServicios autorizacionServicio : autorizacion.getCitAutorizacionesServiciosList()) {
-                        if (paqDetalle.getIdServicio().equals(autorizacionServicio.getFacServicio())) {
-                            ctrlSesionesAutorizadas.setSesionesAutorizadas(autorizacionServicio.getSesionesAutorizadas());
-                            ctrlSesionesAutorizadas.setContadorSesiones(0);
-                            break;
-                        }
-                    }
-                } else {
-                    ctrlSesionesAutorizadas.setSesionesAutorizadas(0);
-                    ctrlSesionesAutorizadas.setContadorSesiones(0);
-                }
+                ctrlSesionesAutorizadas.setSesionesAutorizadas(autorizacion.getSesionesAutorizadas());
+                ctrlSesionesAutorizadas.setContadorSesiones(0);
             } else {
                 ctrlSesionesAutorizadas.setAutorizacionRequerida(false);
             }
             listaCtrlSesionesAutorizadas.add(ctrlSesionesAutorizadas);
         }
-    }
-
-//devuelve el las fechas de las citas dentro del rango elegido. Validando entre la agenda del prestador y los dias seleccionados en el paquete
-    private List<Date> interseccionDiasPaqueteConAgendaPrestador() {
-        CitPaqMaestro paqMaestroSeleccionado = maestroFacade.find(idPaquete);
-        char[] aux = paqMaestroSeleccionado.getDias().toCharArray();
-        List<Integer> diasSemana = new ArrayList();
-        List<Date> fechasCitas = new ArrayList();
-        for (char dia : aux) {
-            Integer d = Integer.parseInt(String.valueOf(dia));
-            diasSemana.add(d);
-        }
-        Calendar calendarIni = Calendar.getInstance();
-        calendarIni.setTime(fechaInicial);
-        Calendar calendarFin = Calendar.getInstance();
-        calendarFin.setTime(fechaFinal);
-        Calendar calendaraux = calendarIni;
-//        int diasTrancurridos = 0;
-        while (!calendaraux.after(calendarFin)) {
-            if (diasSemana.contains(calendaraux.get(Calendar.DAY_OF_WEEK) - 1)) {
-//                System.out.println(calendaraux.getTime());
-                Date date = calendaraux.getTime();
-                if (diasNoLaboralesFacade.FindDiaNoLaboral(id_sedes, date) == null) {//valida que la fecha sea un dia laboral
-                    fechasCitas.add(date);
-                }
-//                diasTrancurridos++;
-            }
-            calendaraux.add(Calendar.DATE, 1);
-        }
-//        System.out.println("dias transcurridos " + diasTrancurridos);
-        return fechasCitas;
     }
 
 //determina la hora para la proxima cita. Respetando las citas previas
@@ -597,7 +578,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
             nombrePaquete = citPaqDetalles.get(0).getIdPaqMaestro().getNomPaquete();
             if (pacienteSeleccionado.getIdAdministradora() != null) {//el paciente debe pertener a alguna administradora
                 if (!pacienteSeleccionado.getIdAdministradora().getCodigoAdministradora().equals("1")) {//la administradora con codigo 1 corresponde a particular por tanto no requiere autorizacion                                       
-                    llenarListaCtrlSesionesAutorizadas();
+//                    llenarListaCtrlSesionesAutorizadas();
                     determinarAutorizacionRequerida();
                 } else {
                     autorizacionRequerida = false;
@@ -612,6 +593,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
 //            imprimirMensaje("Alerta", "Algunos servicios del paquete requieren autorizacion", FacesMessage.SEVERITY_WARN);
             } else {
                 if (!listadoAutorizado.isEmpty()) {//si el listadoAutorizado no esta vacio, se mostrara el dialogo de autorizacion
+                    llenarListaCtrlSesionesAutorizadas();
                     RequestContext.getCurrentInstance().update("idTablaAutorizacion");
                     if (mostrarModal) {
                         RequestContext.getCurrentInstance().execute("PF('dlgEstadoAutorizacion').show()");
@@ -638,6 +620,8 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
                         if (cas.getFacServicio().equals(detalle.getIdServicio())) {
                             autorizacionReport.setNumAutorizacion(autorizacion.getNumAutorizacion());
                             autorizacionReport.setServicio(cas.getFacServicio().getNombreServicio());
+                            autorizacionReport.setIdServicio(cas.getFacServicio().getIdServicio());
+                            autorizacionReport.setRequiereAutorizacion(cas.getFacServicio().getAutorizacion());
                             autorizacionReport.setSesionesAutorizadas(cas.getSesionesAutorizadas());
                             autorizacionReport.setSesionesPendientes(cas.getSesionesPendientes());
                             autorizacionReport.setSesionesRealizadas(cas.getSesionesRealizadas());

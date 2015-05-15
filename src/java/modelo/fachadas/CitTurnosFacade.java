@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
-import javax.persistence.TemporalType;
 import modelo.entidades.CitTurnos;
 
 /**
@@ -353,6 +352,18 @@ public class CitTurnosFacade extends AbstractFacade<CitTurnos> {
         try {
             Query query = getEntityManager().createQuery("SELECT COUNT(t.idTurno) FROM CitTurnos t WHERE t.idTurno IN ?1 AND t.estado = 'disponible'");
             query.setParameter(1, idTurnos);
+            return Integer.parseInt(query.getSingleResult().toString());
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    public int totalTurnosDisponiblesApartirFecha(int idPrestador, int idSede, Date fecha) {
+        try {
+            Query query = getEntityManager().createQuery("SELECT COUNT(t.idTurno) FROM CitTurnos t WHERE t.idPrestador.idUsuario = ?1 AND t.idConsultorio.idSede.idSede = ?2 AND t.fecha >= ?3 AND t.estado = 'disponible'");
+            query.setParameter(1, idPrestador);
+            query.setParameter(2, idSede);
+            query.setParameter(3, fecha);
             return Integer.parseInt(query.getSingleResult().toString());
         } catch (Exception e) {
             return 0;
