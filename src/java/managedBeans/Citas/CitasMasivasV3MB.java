@@ -65,57 +65,57 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
 //    private List<SelectItem> listaServicios;
     private LazyDataModel<CfgPacientes> listaPacientes;
     private String nombrePaquete;
-
+    
     private Date fechaInicial;
     private Date fechaFinal;
     private Date horaInicial;
-
+    
     private List<SelectItem> listaPaquetes;
     private int idPaquete;
-
+    
     private List<CitTurnos> listaTurnos;
     private List<CitCitas> listaCitas;
     private List<IntervaloHoras> listaItervaloOcupado;//lista que almacena el intervalo de tiempo en un dia que el paciente estara ocupado por razon de cita
     private List<AutorizacionReport> listadoAutorizado;
     private List<Integer> id_sedes;//lista utilizada para determinar los dias no laborales exclusivos para la actual sede, como para los comunes entre las sedes.
     private List<CtrlSesionesAutorizadas> listaCtrlSesionesAutorizadas;
-
+    
     private int sede;
     private boolean rendComponente; //renderizar la tabla y el boton crear citas
     private boolean rendTablaResultado;
     private boolean permitidoCrearCitas;
     private boolean autorizacionRequerida;
-
+    
     @EJB
     CfgPacientesFacade pacientesFacade;
-
+    
     @EJB
     CitPaqMaestroFacade maestroFacade;
-
+    
     @EJB
     CitPaqDetalleFacade detalleFacade;
-
+    
     @EJB
     CitTurnosFacade turnosFacade;
-
+    
     @EJB
     CfgUsuariosFacade prestadoresFacade;
-
+    
     @EJB
     CitAutorizacionesFacade autorizacionesFacade;
-
+    
     @EJB
     CitAutorizacionesServiciosFacade autorizacionesServiciosFacade;
-
+    
     @EJB
     CitCitasFacade citasFacade;
-
+    
     @EJB
     CfgDiasNoLaboralesFacade diasNoLaboralesFacade;
-
+    
     public CitasMasivasV3MB() {
     }
-
+    
     @PostConstruct
     private void init() {
         setListaPaquetes((List<SelectItem>) new ArrayList());
@@ -146,7 +146,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
             listaPaquetes.add(new SelectItem(paqMaestro.getIdPaqMaestro(), paqMaestro.getNomPaquete()));
         }
     }
-
+    
     public void findPaciente() {
         setRendComponente(false);
         setRendTablaResultado(false);
@@ -177,7 +177,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
             setHayPacienteSeleccionado(false);
         }
     }
-
+    
     public void actualizarPaciente() {
         listaTurnos.clear();
         listaCitas.clear();
@@ -197,7 +197,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
             setDisplayPaciente("none");
         }
     }
-
+    
     public void buscarDiponibilidad() throws ParseException {
         listaTurnos.clear();
         determinarAutorizacionParaPaquete(false);
@@ -335,7 +335,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
         }
         if (listaTurnos.isEmpty()) {
             setRendComponente(false);
-
+            
             listaTurnos.clear();
 //            imprimirMensaje("Error", "Algun prestador no tiene agenda dentro ese periodo o no la cumple totalmente", FacesMessage.SEVERITY_ERROR);
         } else {
@@ -343,7 +343,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
             setRendComponente(true);
             RequestContext.getCurrentInstance().update("idFormDetallesCita");
         }
-
+        
     }
 
 //    valida que el total de turnos escogidos este dentro de las sesiones autorizadas (si el servicio requiere autorizacion) para cada servicio del paquete
@@ -372,12 +372,29 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
         }
         return ban;
     }
-
+    
     private void eliminarTurnosPorFecha(Date fecha) {
         List<CitTurnos> listaAuxiliar = new ArrayList();
         for (CitTurnos turno : listaTurnos) {
             if (turno.getFecha().equals(fecha)) {
                 listaAuxiliar.add(turno);
+            }
+        }
+//        si se econtraron turnos se debe descontar el contador de sesiones en la listaCtrlSesionesAutorizadas de los servicios afectados
+        if (!listaAuxiliar.isEmpty()) {
+            int contador = 0;
+            List<CitPaqDetalle> detallesPaquete = detalleFacade.buscarPorMaestro(idPaquete);
+            for (CitPaqDetalle detalle : detallesPaquete) {
+                contador++;
+                for (CtrlSesionesAutorizadas csa : listaCtrlSesionesAutorizadas) {
+                    if (csa.getIdServicio() == detalle.getIdServicio().getIdServicio()) {
+                        csa.setContadorSesiones(csa.getContadorSesiones() - 1);
+                        break;
+                    }
+                }
+                if (contador == listaAuxiliar.size()) {
+                    break;
+                }
             }
         }
         listaTurnos.removeAll(listaAuxiliar);
@@ -545,7 +562,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
             }
         }
     }
-
+    
     private FacServicio determinarServicio(int idPrestador) {
         FacServicio servicio = null;
         List<CitPaqDetalle> citPaqDetalles = detalleFacade.buscarPorMaestro(idPaquete);
@@ -557,12 +574,12 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
         }
         return servicio;
     }
-
+    
     private CitAutorizaciones determinarAutorizacionServicio(int idServicio) {//busca si exite alguna autorizacion para el servicio enviado como parametro
         //lista de las autorizaciones no cerradas de un paciente
         return autorizacionesFacade.findAutorizacion(pacienteSeleccionado.getIdPaciente(), idServicio, pacienteSeleccionado.getIdAdministradora().getIdAdministradora());
     }
-
+    
     public void determinarAutorizacionParaPaquete(boolean mostrarModal) {//busca si el paciente seleccionado requiere autorizaciones para los servicios del paquete
 
         listaCtrlSesionesAutorizadas.clear();
@@ -602,7 +619,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
             }
         }
     }
-
+    
     private void determinarAutorizacionRequerida() {
         listadoAutorizado.clear();
         List<CitPaqDetalle> citPaqDetalles = detalleFacade.buscarPorMaestro(idPaquete);
@@ -642,7 +659,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
         }
         RequestContext.getCurrentInstance().update("idTablaAutorizacion");
     }
-
+    
     private boolean validarListadoAutorizado(String servicio) {
         boolean ban = false;
         for (AutorizacionReport autorizacionReport : listadoAutorizado) {
@@ -652,9 +669,9 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
             }
         }
         return ban;
-
+        
     }
-
+    
     public void verAutorizacion() {
         if (idPaquete != 0) {
             determinarAutorizacionParaPaquete(false);
@@ -672,133 +689,133 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
     public String getTipoIdentificacion() {
         return tipoIdentificacion;
     }
-
+    
     public void setTipoIdentificacion(String tipoIdentificacion) {
         this.tipoIdentificacion = tipoIdentificacion;
     }
-
+    
     public String getIdentificacion() {
         return identificacion;
     }
-
+    
     public void setIdentificacion(String identificacion) {
         this.identificacion = identificacion;
     }
-
+    
     public CfgPacientes getPacienteSeleccionado() {
         return pacienteSeleccionado;
     }
-
+    
     public void setPacienteSeleccionado(CfgPacientes pacienteSeleccionado) {
         this.pacienteSeleccionado = pacienteSeleccionado;
     }
-
+    
     public LazyDataModel<CfgPacientes> getListaPacientes() {
         return listaPacientes;
     }
-
+    
     public void setListaPacientes(LazyDataModel<CfgPacientes> listaPacientes) {
         this.listaPacientes = listaPacientes;
     }
-
+    
     public boolean isHayPacienteSeleccionado() {
         return hayPacienteSeleccionado;
     }
-
+    
     public void setHayPacienteSeleccionado(boolean hayPacienteSeleccionado) {
         this.hayPacienteSeleccionado = hayPacienteSeleccionado;
     }
-
+    
     public String getDisplayPaciente() {
         return displayPaciente;
     }
-
+    
     public void setDisplayPaciente(String displayPaciente) {
         this.displayPaciente = displayPaciente;
     }
-
+    
     public Date getFechaInicial() {
         return fechaInicial;
     }
-
+    
     public void setFechaInicial(Date fechaInicial) {
         this.fechaInicial = fechaInicial;
     }
-
+    
     public Date getFechaFinal() {
         return fechaFinal;
     }
-
+    
     public void setFechaFinal(Date fechaFinal) {
         this.fechaFinal = fechaFinal;
     }
-
+    
     public List<SelectItem> getListaPaquetes() {
         return listaPaquetes;
     }
-
+    
     public void setListaPaquetes(List<SelectItem> listaPaquetes) {
         this.listaPaquetes = listaPaquetes;
     }
-
+    
     public int getIdPaquete() {
         return idPaquete;
     }
-
+    
     public void setIdPaquete(int idPaquete) {
         this.idPaquete = idPaquete;
     }
-
+    
     public List<CitTurnos> getListaTurnos() {
         return listaTurnos;
     }
-
+    
     public void setListaTurnos(List<CitTurnos> listaTurnos) {
         this.listaTurnos = listaTurnos;
     }
-
+    
     public boolean isRendComponente() {
         return rendComponente;
     }
-
+    
     public void setRendComponente(boolean rendComponente) {
         this.rendComponente = rendComponente;
     }
-
+    
     public List<CitCitas> getListaCitas() {
         return listaCitas;
     }
-
+    
     public void setListaCitas(List<CitCitas> listaCitas) {
         this.listaCitas = listaCitas;
     }
-
+    
     public boolean isRendTablaResultado() {
         return rendTablaResultado;
     }
-
+    
     public void setRendTablaResultado(boolean rendTablaResultado) {
         this.rendTablaResultado = rendTablaResultado;
     }
-
+    
     public String getNombrePaquete() {
         return nombrePaquete;
     }
-
+    
     public Date getHoraInicial() {
         return horaInicial;
     }
-
+    
     public void setHoraInicial(Date horaInicial) {
         this.horaInicial = horaInicial;
     }
-
+    
     public List<AutorizacionReport> getListadoAutorizado() {
         return listadoAutorizado;
     }
-
+    
     public void setListadoAutorizado(List<AutorizacionReport> listadoAutorizado) {
         this.listadoAutorizado = listadoAutorizado;
     }
-
+    
 }
