@@ -49,8 +49,8 @@ public class RipsAf implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected RipsAfPK ripsAfPK;
-    @Size(max = 10)
-    @Column(name = "cod_pre", length = 10)
+    @Size(max = 12)
+    @Column(name = "cod_pre", length = 12)
     private String codPre;
     @Size(max = 60)
     @Column(name = "raz_soc", length = 60)

@@ -93,7 +93,7 @@
                         value="#{facturarAdministradoraMB.listaServiciosFactura}" 
                         filteredValue="#{facturarAdministradoraMB.listaServiciosFacturaFiltro}"
                         rowKey="#{servicioFactura.columna1}"  
-                        
+
                         paginator="true"
                         paginatorPosition="bottom"                                
                         emptyMessage="No hay servicios"
@@ -317,7 +317,7 @@
                     currentPageReportTemplate="Mostrando {startRecord}-{endRecord} de {totalRecords}"
                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                     pageLinks="5">                    
-                    <p:ajax event="rowSelect" listener="#{facturarAdministradoraMB.seleccionFilaBuscarFactura}" update=":IdFormFacturacion:IdBtnPdfFactura :IdFormFacturacion:IdBtnPdfFactura2 :IdFormFacturacion:IdBtnAnularFactura" />
+                    <p:ajax event="rowSelect" listener="#{facturarAdministradoraMB.seleccionFilaBuscarFactura}" update=":IdFormFacturacion:IdBtnPdfFactura :IdFormFacturacion:IdBtnPdfFactura2 :IdFormFacturacion:IdBtnAnularFactura :IdFormFacturacion:IdBtnRips"/>
                     <p:column headerText="FECHA" width="95"> 
                         #{factura.columna2}
                     </p:column>  
@@ -335,9 +335,12 @@
                     </p:column>
                 </p:dataTable>
                 <br/>                
-                <p:commandButton id="IdBtnPdfFactura"    disabled="#{facturarAdministradoraMB.disableControlesBuscarFactura}" icon="ui-icon-document" value="PDF Detallada" actionListener="#{facturarAdministradoraMB.generarPdfDetallada}" ajax="false" onclick="this.form.target = '_blank'" widgetVar="wvBtnPdfFactura"/>
-                <p:commandButton id="IdBtnPdfFactura2"    disabled="#{facturarAdministradoraMB.disableControlesBuscarFactura}" icon="ui-icon-document" value="PDF Agrupada" actionListener="#{facturarAdministradoraMB.generarPdfAgrupada}" ajax="false" onclick="this.form.target = '_blank'" widgetVar="wvBtnPdfFactura"/>
-                <p:commandButton id="IdBtnAnularFactura" disabled="#{facturarAdministradoraMB.disableControlesBuscarFactura}" icon="ui-icon-cancel"   value="Anular" actionListener="#{facturarAdministradoraMB.anularFactura}" update="IdMensajeFacturacion"/>
+                <p:commandButton id="IdBtnPdfFactura"    disabled="#{facturarAdministradoraMB.facturaSeleccionadaTabla==null}" icon="ui-icon-document" value="PDF Detallada" actionListener="#{facturarAdministradoraMB.generarPdfDetallada}" ajax="false" onclick="this.form.target = '_blank'" widgetVar="wvBtnPdfFactura"/>
+                <p:commandButton id="IdBtnPdfFactura2"   disabled="#{facturarAdministradoraMB.facturaSeleccionadaTabla==null}" icon="ui-icon-document" value="PDF Agrupada" actionListener="#{facturarAdministradoraMB.generarPdfAgrupada}" ajax="false" onclick="this.form.target = '_blank'" widgetVar="wvBtnPdfFactura"/>
+                <p:commandButton id="IdBtnAnularFactura" disabled="#{facturarAdministradoraMB.facturaSeleccionadaTabla==null}" icon="ui-icon-cancel"   value="Anular" actionListener="#{facturarAdministradoraMB.anularFactura}" update="IdMensajeFacturacion"/>
+                <p:commandButton id="IdBtnRips"          disabled="#{facturarAdministradoraMB.facturaSeleccionadaTabla==null}" icon="ui-icon-triangle-1-s"   value="RIPS" ajax="false">
+                    <p:fileDownload value="#{ripsMB.generarZipfacturaAdministradora()}" />
+                </p:commandButton>
                 <br/>                
             </p:dialog>              
             <p:dialog id="IdDialogoGuardarFactura" header="CONFIRMAR GUARDAR FACTURA" widgetVar="dialogoConfirmarGuardarFactura" resizable="false" modal="true">  

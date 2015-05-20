@@ -4,7 +4,7 @@
 <NOTAS>
     
     192.168.0.106  SERVIDOR APRENDER         (424683911) 
-    190.147.27.113     SERVIDOR ING FRANK        (416296392)
+    190.147.27.113 SERVIDOR ING FRANK        (416296392)
 
     186.114.213.195:8080/OPENMEDICAL 
     WINDOWS FACTURACION 1234
@@ -40,72 +40,39 @@ manual tarifario no carga servicios
 <MANUALES_PAQUETES>    
     - se debe poder agregar todos los medicamentos(AL TIEMPO) insumos o servicios aplicando un descuento para todos
     - copiar contratos, manuales etc...
-    - cuando tarifa sea especifica deshabilitar el campo Unidad de Valor
-    - la lista de manuales tarifarios en contratos debe filtrarse por los que ya se esten usando  
+    - cuando tarifa sea especifica deshabilitar el campo Unidad de Valor    
 </MANUALES_PAQUETES>			
-<FACTURAR>    
-    - AL FACTURAR UN PACIENTE SE DEBE DETERMINAR QUE EL CONTRATO NO DEBE ESTAR VENCIDO(FECHA INICIAL - FECHA FINAL)    
+<FACTURAR>
     - facturas: una opcion para seleccionar los consumos de Sericios, medicamentos Insumos Paquetes al tiempo (sacar Mensaje para saber que selecciono o desselecciono 	)		
     - como se hacen los redondeos de valores? (redondear a decena) minimo1 (SIN DECIMALES)   
     - configurar consulta de LazzyFacturasDataModel (Tome filtros) (NORMAL)
     
     - para facturar una administradora recorro facturas de pacientes para cada registro verifico el estado de la autorizacion => fac_factura.id_cita.id_adutorizacion
-      la cual tiene un campo llamado 'CERRADO' el que me dice si una factura al tener CERRADA=true se le pasa a la administradora.
+      la cual tiene un campo llamado 'CERRADO' el que me dice si una factura al tener CERRADA=true se le pasa a la administradora.    
+    - una autorizacion puede estar cerrada pero no se completaron todos los servicios que la componian (hay que recorrer cuales se completaron)
+    - CUANDO SE ENCUENTRA UNA FACTURA CON AUTORIZACION CERRADA SE DEBE BUSCAR TODAS LAS FACTURAS QUE TENGAN ESE MISMO NUMERO DE
+      AUTORIZACION ASI ESTE EN OTRA FECHA Y DEBEN SER AGREGADAS AL ARREGLO QUE CONTIENE TODAS LAS FACTURAS DE LOS PACIENTES    
+    - para facilidad de los puntos anteriores mostrar un mensaje informativo con el conteo de facturas no asicionadas
+      tambien facturas sacadas de otros periodos 
+    - queda un copago por autorizacion y por factura(asi tenga varios servicios)
     
-      una autorizacion puesde estar cerrada pero no se completaron todos los servicios que la componian (hay que recorrer cuales se completaron)
-    
-    001F.   CUANDO SE ENCUENTRA UNA FACTURA CON AUTORIZACION CERRADA SE DEBE BUSCAR TODAS LAS FACTURAS QUE TENGAN ESE MISMO NUMERO DE
-    AUTORIZACION ASI ESTE EN OTRA FECHA Y DEBEN SER AGREGADAS AL ARREGLO QUE CONTIENE TODAS LAS FACTURAS DE LOS PACIENTES
-    
-    
-    002F. - en el rip de control el numero que va en el codigo de archivo es el numero de factura que se le va a presentar ala administradora
-   003F. - se debe solicitar en la interfaz de RIPS es ingresado por el usuario, t
-    004F.- desde facturar administradora debe aparecer un boton de generar rips el cual carga los datos a la interfaz de rips, en el dialogo de buscar facturas de administrador
+    (YA) impedir doble facturacion mediante un valor boleano en fac_factura_paciente que me indique si ya se pafturo por administradora
+    (YA) la lista de manuales tarifarios en contratos debe filtrarse por los que ya se esten usando  
+    (YA) validacion de contrato(esta o no vigente)
+    (YA) validacion de turno(puede factura pero provocara errores en rtips)
+    (YA) validacion de consumos(Puede factiurar pero puede tener consumos pendientes)   
     
     
+    (YA) en el rip de control el numero que va en el codigo de archivo es el numero de factura que se le va a presentar ala administradora    
+    (YA) se debe solicitar en la interfaz de RIPS es ingresado por el usuario
     
-    
-    - fac_factura.tipo_ingreso es ambulatorio (POR EL MOMENTO ES FIJO = 1)	<_ Definir si este campo se usa (fac_factura.tipo_ingreso) o se usa (fac_servicio.ambito />    
-    - Todos los registros clinicos de un paciente forman la historia clinica, todos llevan el mismo numero de historia
-      que es el numero de identificacion del paciente solo se diferencian el el nuero de folio que es un consecutivo por registro clinico        
-      (NO USAR NUMERO DE HISTORIA CLINICA- SACARLO DE IDENTIFICACION PACIENTE)
+    (YA) desde facturar administradora debe aparecer un boton de generar rips el cual carga los datos a la interfaz de rips, en el dialogo de buscar facturas de administrador    
+    (YA) fac_factura.tipo_ingreso es ambulatorio (POR EL MOMENTO ES FIJO = 1 RTA/ se saca de fac_factura.tipo_ingreso
+        
 </FACTURAR>	
-<REUNION_MARIO>	    
-    - permitir eliminacion de turnos en un rango de fechas y hora desde generar turnos     
-    - activar o desactivar el boton crear autorizacion si en realidad se necesita o no crear una autorizacion
-      lo realiza mario             
-    
-    
-    <problema:  NO ESTA PERMITIENDO ACTUALIZAR LA FIRMA DEL PRESTADOR  >
-    
-    
-    
-</REUNION_MARIO>	   	   		
-<DUDAS>
-    ? en archivo de diagnosticos hay una columna que dice 'CON PUNTO' si toca sacarla hay que registrar esos datos
-    ? se dice que el codigo de la empresa debe ser 10 caracteres pero tiene MAS (VALIDO EN EL FORMULARIO??)    
-      <RTA: dejarlo como vieje desde el archivo de RIPS>
-    ? EN archivos AC y AP no se tienen CREE ni COPAGO que pasa con esos datos (por lo que me decia que al sumar RIPS los resultados deben dar igual)   
-    ? Si se pasa a espera desde recepcion citas y nuevamente desde recepcion de citas se quiere facturar
-      pasa que el servicio se carga a la factura pero tambien se encuentra en consumos (que se hace)    
-      005F. Cuando se vaya a facturar el paciente validemos que no tenga nada en consumo. 
-            Si existen consumos remarcar el boton 'consumos' y un tooltip que indique:
-            - No tiene consumos prentides
-            - tiene N consumos pendiestes  
-       
+<DUDAS>        
     ? Código del procedimiento: fac_servicio > código_cup < PENDIENTE POR CONSEGUIR ESOS CODIGOS />
-        006F. YA ME LO ENTREGAN
-    
-    ? CUALES SON LOS GRUPOS DE SERVICIOS: En la interfaz de 'nuevo servicio' se solicita agrupacion: 
-       que coloco ahi??
-       007F. POR EL MOMENTO OCULTAR      
-          
-    ? cuando se trata de un paquete hay que separar los sevicios para generar los rips? 
-        < RTA/ PENDIENTE POR CONFIRMAR />    
-      
-    ? en el RIP AC se pide valor de cuota moderadora lo estoy sacando de la factura y se lo aplico a todos los servicios  
-      pero como quedaria el valor neto en este rip si solicita cuota moderadora por servicio?? verificar como es eso
-      < RTA / QUEDA PENDIENTE>
+        006F. YA ME LO ENTREGAN              
 </DUDAS>
 <POSTERGADO>
     001. REALIZAR MODULO DE BACKUP    
@@ -115,8 +82,7 @@ manual tarifario no carga servicios
     000. exportar pacientes a csv
     000. otro home que muestre registros sin cita asociada   RTA/ HACERLO DESPUES 
     000. EN FACTURACION LOS TEXTOS QUE TENGAN MENSAJE SALGAN CON COLOR DISTINTO(confunde mas postergarlo)  
-    000. al guardar factura sacar PDF(SON DOS FUNCIONES MUY DIFERENTES MUY COMPLICADO, toca usar onclick="this.form.target = '_blank'" ) < RTA/ DEJALO PENDIENTE /> 
-    000. Los formatos de Clinica Neurologica son 3: TRES NUEVE DIEZ
+    000. al guardar factura sacar PDF(SON DOS FUNCIONES MUY DIFERENTES MUY COMPLICADO, toca usar onclick="this.form.target = '_blank'" ) < RTA/ DEJALO PENDIENTE />     
     000. el numero de turnos codificarlo mejor(POR EL MOMENTO NO ES SOLUCION)
     000. formatear valores doouble en datatables(BASTANTE LARGO PONERCE A CORREGIR ESTO) // NO POR EL MOEMNTO
     000. las interfaces deberian ajustarce lo mas posible al estandar que se ha manejado hasta el momento(botones arriba interfaz abajo)            
