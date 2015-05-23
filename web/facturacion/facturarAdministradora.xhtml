@@ -114,10 +114,10 @@
                         <p:column headerText="IDENTIFICACION" width="100" filterBy="#{servicioFactura.columna3}" filterMatchMode="contains">
                             #{servicioFactura.columna3}
                         </p:column>
-                        <p:column headerText="PACIENTE" width="300" filterBy="#{servicioFactura.columna4}" filterMatchMode="contains">
+                        <p:column headerText="PACIENTE" width="200" filterBy="#{servicioFactura.columna4}" filterMatchMode="contains">
                             #{servicioFactura.columna4}
                         </p:column>
-                        <p:column headerText="SERVICIO" width="200" filterBy="#{servicioFactura.columna5}" filterMatchMode="contains">
+                        <p:column headerText="SERVICIO" width="300" filterBy="#{servicioFactura.columna5}" filterMatchMode="contains">
                             #{servicioFactura.columna5}
                         </p:column>
                         <p:column headerText="CANTIDAD" width="50" filterBy="#{servicioFactura.columna6}" filterMatchMode="contains">
@@ -127,8 +127,27 @@
                             #{servicioFactura.columna7}
                         </p:column>                                    
                     </p:dataTable>  
+                    <table>
+                        <tr>
+                            <td>
+                                <p:commandButton value="Observaciones Factura" onclick="PF('dialogoObservacionesFactura').show()"/>
+                            </td>                            
+                            <td style="#{facturarAdministradoraMB.estiloNotas}">                               
+                                <p:outputLabel id="IdNotaNoCerradas" value="#{facturarAdministradoraMB.notaNoCerradas}" escape="false"/>                               
+                                <p:tooltip for="IdNotaNoCerradas" style="width: 200px;" value="
+                                           Solo se agregan aquellas facturas 
+                                           con autorizaciones cerradas(o sea se aplicaron
+                                           todos los servicios contenidos en la autorización)" escape="false" />                            
+                                <p:outputLabel id="IdNotaFueraRango" value="#{facturarAdministradoraMB.notaFueraRango}" escape="false"/>                               
+                                <p:tooltip for="IdNotaFueraRango" style="width: 200px;" value="
+                                           Las facturas fuera de rango corresponden a aquellas que
+                                           no están dentro del rango de fechas especificado actualmente
+                                           pero tienen igual número de autorización que una factura que si
+                                           esta en este rango." escape="false" />                            
+                            </td>
+                        </tr>
+                    </table>
 
-                    <p:commandButton value="Observaciones Factura" style="left: 20px;" onclick="PF('dialogoObservacionesFactura').show()"/>
                 </p:tab>
                 <p:tab title="#{facturarAdministradoraMB.tituloTabPaquetesFactura}">
 
@@ -162,7 +181,7 @@
                         <p:column headerText="PACIENTE" width="200" filterBy="#{paqueteFactura.columna4}" filterMatchMode="contains">
                             #{paqueteFactura.columna4}
                         </p:column>                                    
-                        <p:column headerText="PAQUETE" width="200" filterBy="#{paqueteFactura.columna5}" filterMatchMode="contains">
+                        <p:column headerText="PAQUETE" width="300" filterBy="#{paqueteFactura.columna5}" filterMatchMode="contains">
                             #{paqueteFactura.columna5}
                         </p:column>
                         <p:column headerText="CANTIDAD" width="50" filterBy="#{paqueteFactura.columna6}" filterMatchMode="contains">
@@ -203,10 +222,10 @@
                         <p:column headerText="IDENTIFICACION" width="100" filterBy="#{medicamentoFactura.columna3}" filterMatchMode="contains">
                             #{medicamentoFactura.columna3}
                         </p:column>                                   
-                        <p:column headerText="PACIENTE" width="300" filterBy="#{medicamentoFactura.columna4}" filterMatchMode="contains">
+                        <p:column headerText="PACIENTE" width="200" filterBy="#{medicamentoFactura.columna4}" filterMatchMode="contains">
                             #{medicamentoFactura.columna4}
                         </p:column>                                   
-                        <p:column headerText="MEDICAMENTO" width="200" filterBy="#{medicamentoFactura.columna5}" filterMatchMode="contains">
+                        <p:column headerText="MEDICAMENTO" width="300" filterBy="#{medicamentoFactura.columna5}" filterMatchMode="contains">
                             #{medicamentoFactura.columna5}
                         </p:column>                                   
                         <p:column headerText="CANTIDAD" width="50" filterBy="#{medicamentoFactura.columna6}" filterMatchMode="contains">
@@ -247,10 +266,10 @@
                         <p:column headerText="IDENTIFICACION" width="100" filterBy="#{insumoFactura.columna3}" filterMatchMode="contains">
                             #{insumoFactura.columna3}
                         </p:column>
-                        <p:column headerText="PACIENTE" width="300" filterBy="#{insumoFactura.columna4}" filterMatchMode="contains">
+                        <p:column headerText="PACIENTE" width="200" filterBy="#{insumoFactura.columna4}" filterMatchMode="contains">
                             #{insumoFactura.columna4}
                         </p:column>
-                        <p:column headerText="INSUMO" width="200" filterBy="#{insumoFactura.columna5}" filterMatchMode="contains">
+                        <p:column headerText="INSUMO" width="300" filterBy="#{insumoFactura.columna5}" filterMatchMode="contains">
                             #{insumoFactura.columna5}
                         </p:column>
                         <p:column headerText="CANTIDAD" width="50" filterBy="#{insumoFactura.columna6}" filterMatchMode="contains">

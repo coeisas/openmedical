@@ -73,8 +73,8 @@ public class RipsAf implements Serializable {
     @Size(max = 10)
     @Column(name = "fec_fin", length = 10)
     private String fecFin;
-    @Size(max = 6)
-    @Column(name = "cod_ent", length = 6)
+    @Size(max = 20)
+    @Column(name = "cod_ent", length = 20)
     private String codEnt;
     @Size(max = 30)
     @Column(name = "nom_ent", length = 30)

@@ -133,7 +133,7 @@ public class ServiciosMB extends MetodosGenerales implements Serializable {
     }
 
     public void buscarServicio() {
-        listaServicios = servicioFacade.busacarOrdenado();
+        listaServicios = servicioFacade.buscarTodosOrdenado();
         servicioSeleccionadoTabla = null;
         RequestContext.getCurrentInstance().execute("PF('wvTablaServicios').clearFilters(); PF('wvTablaServicios').getPaginator().setPage(0); PF('dialogoBuscarServicios').show();");
     }
