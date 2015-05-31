@@ -93,7 +93,7 @@ public class ServiciosMB extends MetodosGenerales implements Serializable {
     }
 
     public ServiciosMB() {
-
+        aplicacionGeneralMB=FacesContext.getCurrentInstance().getApplication().evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{aplicacionGeneralMB}", AplicacionGeneralMB.class);
     }
 
     //---------------------------------------------------
