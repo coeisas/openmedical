@@ -103,7 +103,7 @@
                 <p:commandButton value="Cargar" actionListener="#{historiasMB.cargarPaciente}" update="IdpanelDatosPaciente IdPanelRegistroClinico"/>                
                 <br/>                
             </p:dialog>
-            <p:dialog header="Histórico paciente" widgetVar="dlgHistorico" modal="true" resizable="false" closable="true">                
+            <p:dialog id="IdDialogHistorico" header="Histórico paciente" widgetVar="dlgHistorico" modal="true" resizable="false" closable="true">                
                 <p:panel id="IdPanelHistorico" style="border: none;"  >
                     <h:panelGrid columns="8" cellpadding="2">                        
                         <p:selectCheckboxMenu id="IdComboTipReg" value="#{historiasMB.regCliSelHistorial}" label="Tipos de registro"
@@ -116,7 +116,7 @@
                         <p:calendar locale="es" navigator="true" value="#{historiasMB.filtroFechaInicial}" pattern="dd/MM/yyyy" size="11" mask="true"  />
                         <h:outputLabel for="IdComboTipReg" value="Fecha Fin" />
                         <p:calendar locale="es" navigator="true" value="#{historiasMB.filtroFechaFinal}" pattern="dd/MM/yyyy" size="11" mask="true"  />
-                        <p:commandButton icon="ui-icon-refresh" actionListener="#{historiasMB.cargarHistorial}" title="Aplicar filtros" />       
+                        <p:commandButton icon="ui-icon-refresh" actionListener="#{historiasMB.cargarHistorial}" title="Aplicar filtros" update="IdArbolHistorial" />       
                     </h:panelGrid>
                     <p:tree  
                         style="width: 700px; height: 370px; margin: 10px; overflow-x:hidden; overflow-y: scroll;"

@@ -1426,7 +1426,7 @@ public class FacturarPacienteMB extends MetodosGenerales implements Serializable
                 }
 
                 if (medicamentoFactura.getColumna30().compareTo("-1") != 0) {//ELIMINAR SI FORMABA PARTE DE CONSUMOS
-                    consumoServicioFacade.remove(consumoServicioFacade.find(Integer.parseInt(medicamentoFactura.getColumna30())));//            nuevaFila.setColumna30("-1");//COLUMNA 30 CONTIENE EL IDENTIFICADOR EN TABLA fac_consumo_servicio //como fue agreado desde la misma fatura no refiere a la tabla fac_consumo_servicio                    
+                    consumoMedicamentoFacade.remove(consumoMedicamentoFacade.find(Integer.parseInt(medicamentoFactura.getColumna30())));//            nuevaFila.setColumna30("-1");//COLUMNA 30 CONTIENE EL IDENTIFICADOR EN TABLA fac_consumo_servicio //como fue agreado desde la misma fatura no refiere a la tabla fac_consumo_servicio                    
                 }
                 facturaMedicamentoFacade.create(nuevoMedicamentoFactura);
             } catch (ParseException ex) {
@@ -1460,7 +1460,7 @@ public class FacturarPacienteMB extends MetodosGenerales implements Serializable
                 }
 
                 if (paqueteFactura.getColumna30().compareTo("-1") != 0) {//ELIMINAR SI FORMABA PARTE DE CONSUMOS
-                    consumoServicioFacade.remove(consumoServicioFacade.find(Integer.parseInt(paqueteFactura.getColumna30())));//            nuevaFila.setColumna30("-1");//COLUMNA 30 CONTIENE EL IDENTIFICADOR EN TABLA fac_consumo_servicio //como fue agreado desde la misma fatura no refiere a la tabla fac_consumo_servicio                    
+                    consumoPaqueteFacade.remove(consumoPaqueteFacade.find(Integer.parseInt(paqueteFactura.getColumna30())));//            nuevaFila.setColumna30("-1");//COLUMNA 30 CONTIENE EL IDENTIFICADOR EN TABLA fac_consumo_servicio //como fue agreado desde la misma fatura no refiere a la tabla fac_consumo_servicio                    
                 }
                 facturaPaqueteFacade.create(nuevoPaqueteFactura);
             } catch (ParseException ex) {
@@ -1493,7 +1493,7 @@ public class FacturarPacienteMB extends MetodosGenerales implements Serializable
                 }
 
                 if (insumoFactura.getColumna30().length() != 0 && insumoFactura.getColumna30().compareTo("-1") != 0) {//ELIMINAR SI FORMABA PARTE DE CONSUMOS
-                    consumoServicioFacade.remove(consumoServicioFacade.find(Integer.parseInt(insumoFactura.getColumna30())));//            nuevaFila.setColumna30("-1");//COLUMNA 30 CONTIENE EL IDENTIFICADOR EN TABLA fac_consumo_servicio //como fue agreado desde la misma fatura no refiere a la tabla fac_consumo_servicio                    
+                    consumoInsumoFacade.remove(consumoInsumoFacade.find(Integer.parseInt(insumoFactura.getColumna30())));//            nuevaFila.setColumna30("-1");//COLUMNA 30 CONTIENE EL IDENTIFICADOR EN TABLA fac_consumo_servicio //como fue agreado desde la misma fatura no refiere a la tabla fac_consumo_servicio                    
                 }
                 facturaInsumoFacade.create(nuevoInsumoFactura);
             } catch (ParseException ex) {
