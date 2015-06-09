@@ -90,7 +90,8 @@ public class CitTurnosFacade extends AbstractFacade<CitTurnos> {
 
     public List<CitTurnos> findTurnosDisponiblesByPrestadoresLazyNative(String consulta, List id_prestadores, int especialidad, Date horaIni, Date horaFin, List<Integer> daysofweek, int offset, int limit) {
         try {
-            Query query = getEntityManager().createNativeQuery(consulta.concat(" order by cit_turnos.fecha, cit_turnos.hora_ini"), CitTurnos.class);
+            Query query = getEntityManager().createNativeQuery(consulta.concat(" order by fecha, hora_ini"), CitTurnos.class);
+//            System.out.println(query);
             query.setFirstResult(offset);
             query.setMaxResults(limit);
             return (List<CitTurnos>) query.getResultList();
