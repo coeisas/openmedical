@@ -171,6 +171,7 @@ h2{
 /*COLORES PARA LAS AGENDAS crearAgendaPrestador.xhtml-------------------------*/
 .no_disponible .fc-event-inner {
     background: #fabfb7;
+    color: brown;
 }
 .color_sin_asignar .fc-event-inner {
     background: #b6cfd4;
