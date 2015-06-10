@@ -21,11 +21,20 @@ public class CfgPacientesFacade extends AbstractFacade<CfgPacientes> {
     public List<CfgPacientes> consultaNativaPacientes(String sql) {
         List<CfgPacientes> listaPacientes = (List<CfgPacientes>) getEntityManager().createNativeQuery(sql, CfgPacientes.class).getResultList();
         return listaPacientes;
-    }   
+    }
+
+    public List<CfgPacientes> buscarOrdenado() {
+        try {
+            String hql = "SELECT c FROM CfgPacientes c ORDER BY c.primerNombre ASC";
+            return getEntityManager().createQuery(hql).getResultList();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 
     public int numeroTotalRegistros() {
-        try {            
-            return Integer.parseInt(getEntityManager().createNativeQuery("SELECT COUNT(*) FROM cfg_pacientes").getSingleResult().toString());            
+        try {
+            return Integer.parseInt(getEntityManager().createNativeQuery("SELECT COUNT(*) FROM cfg_pacientes").getSingleResult().toString());
         } catch (Exception e) {
             return 0;
         }
@@ -67,9 +76,8 @@ public class CfgPacientesFacade extends AbstractFacade<CfgPacientes> {
             return null;
         }
     }
-    
-    
-    public EntityManager obtenerEntityManager(){
+
+    public EntityManager obtenerEntityManager() {
         return getEntityManager();
     }
 

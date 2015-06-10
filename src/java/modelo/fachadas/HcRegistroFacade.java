@@ -130,7 +130,7 @@ public class HcRegistroFacade extends AbstractFacade<HcRegistro> {
                     + " select * \n"
                     + " from hc_registro  \n"
                     + " where \n"
-                    + " id_cita = "+idCita+" AND \n"
+                    + " id_cita = " + idCita + " AND \n"
                     + " id_tipo_reg in (1,2,5,7,8)  \n"
                     + " ORDER BY fecha_reg DESC\n"
                     + " LIMIT 1", HcRegistro.class).getSingleResult();
@@ -138,19 +138,27 @@ public class HcRegistroFacade extends AbstractFacade<HcRegistro> {
             return null;
         }
     }
-    
-    public HcRegistro buscarRegistroConDiagnosticoSegunPaciente(String idPaciente ){
+
+    public HcRegistro buscarRegistroConDiagnosticoSegunPaciente(String idPaciente) {
         try {
             return (HcRegistro) getEntityManager().createNativeQuery(""
                     + " select * \n"
                     + " from hc_registro  \n"
                     + " where \n"
-                    + " id_paciente = "+idPaciente+" AND \n"
+                    + " id_paciente = " + idPaciente + " AND \n"
                     + " id_tipo_reg in (1,2,5,7,8)  \n"
                     + " ORDER BY fecha_reg DESC\n"
                     + " LIMIT 1", HcRegistro.class).getSingleResult();
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    public int buscarMaximoFolio(Integer idPaciente) {
+        try {
+            return Integer.parseInt(getEntityManager().createNativeQuery("SELECT MAX(folio) FROM hc_registro WHERE id_paciente = " + idPaciente).getSingleResult().toString());
+        } catch (Exception e) {
+            return 0;
         }
     }
 
