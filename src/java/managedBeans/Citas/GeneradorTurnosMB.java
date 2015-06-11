@@ -413,11 +413,8 @@ public class GeneradorTurnosMB extends MetodosGenerales implements Serializable 
         if (bandera) {
             displayBtnEliminarAgenda = "block";
             loadEvents();
-//        schTurnos
-            RequestContext.getCurrentInstance().update(listaComponentesActualizar);
-            //liberar();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "La agenda fue creada"));
-//        imprimirMensaje("Correcto", "La agenda fue creada", FacesMessage.SEVERITY_INFO);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Agenda creada"));
+            RequestContext.getCurrentInstance().update("message");
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "La agenda no fue creada. Probablemente el periodo elegido corresponde a un dia no laboral para el horario o la sede"));
         }
@@ -501,17 +498,12 @@ public class GeneradorTurnosMB extends MetodosGenerales implements Serializable 
         if (bandera) {
             loadEvents();
             liberar();
-            List<String> componentes = new ArrayList();
-            componentes.add("formCrearAgenda:schTurnos");
-//            componentes.add("idFormCrearTurnoDlg");
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "La agenda fue creada"));
-            RequestContext.getCurrentInstance().update(componentes);
-//            RequestContext.getCurrentInstance().execute("PF('dlgCrearTurno').hide()");
+            RequestContext.getCurrentInstance().update("message");
 
         } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No se crearon los turnos es posible que el rango de fecha corresponda a dias no laborales"));
         }
-        //liberar();
     }
 
     public void accionControlador() throws ParseException {
@@ -653,7 +645,7 @@ public class GeneradorTurnosMB extends MetodosGenerales implements Serializable 
             if (totalTurnos > 0) {
                 int result = citTurnosFacade.EliminarAgenda(prestadorSeleccionado.getIdUsuario(), id_sede, fechaIni, fechaFin, id_horario, estados);
                 if (result == totalTurnos) {
-                    RequestContext.getCurrentInstance().update(listaComponentesActualizar);
+//                    RequestContext.getCurrentInstance().update(listaComponentesActualizar);
                     FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Agenda eliminada"));
 //                    imprimirMensaje("Correcto", "Turnos eliminados", FacesMessage.SEVERITY_INFO);
                 } else if (result > 0) {
@@ -663,12 +655,13 @@ public class GeneradorTurnosMB extends MetodosGenerales implements Serializable 
                 } else {
                     result = citTurnosFacade.actualizarTurno(prestadorSeleccionado.getIdUsuario(), id_sede, fechaIni, fechaFin, id_horario);
                     if (result == 0) {
-                        imprimirMensaje("Error", "No encontraron turnos a elminar", FacesMessage.SEVERITY_ERROR);
+                        imprimirMensaje("Error", "No se encontraron turnos a eliminar", FacesMessage.SEVERITY_ERROR);
                         return;
                     }
-                    imprimirMensaje("Informacion", "Los turnos disponibles relacionados con una cita cancelada no lo estaran", FacesMessage.SEVERITY_INFO);
+                    imprimirMensaje("Informacion", "Los turnos disponibles relacionados con una cita cancelada no estaran disponibles", FacesMessage.SEVERITY_WARN);
                 }
                 loadEvents();
+                RequestContext.getCurrentInstance().update("message");
             } else {
 //                RequestContext.getCurrentInstance().update("formCrearAgenda:idCBeliminarAgenda");
                 imprimirMensaje("Error", "No se econtraron turnos a eliminiar", FacesMessage.SEVERITY_ERROR);
@@ -728,8 +721,9 @@ public class GeneradorTurnosMB extends MetodosGenerales implements Serializable 
                     cfgHorarioFacade.remove(horario);
                     cargarItemsHorario();
 //                    RequestContext.getCurrentInstance().update("message");
-                    imprimirMensaje("Correcto", "Horario eliminado", FacesMessage.SEVERITY_INFO);
                     RequestContext.getCurrentInstance().update("formCrearAgenda:idHorario");
+                    imprimirMensaje("Correcto", "Horario eliminado", FacesMessage.SEVERITY_INFO);
+                    RequestContext.getCurrentInstance().update("message");
                 } else {
                     imprimirMensaje("Error", "El horario no fue eliminado completamente", FacesMessage.SEVERITY_ERROR);
                 }

@@ -13,7 +13,7 @@
     </h:head>
     <h:body id="cuerpo">
         <br/>
-        <p:growl id="message" showDetail="true" autoUpdate="true" />
+        <p:growl id="message" showDetail="true" autoUpdate="false" life="2500"/>
         <h:form id="formAsignarPrestador">            
             <p:panel styleClass="centrar-maximo">
                 <table>
@@ -74,10 +74,10 @@
                                 <p:selectOneMenu id="idHorario" value="#{generadorTurnosMB.id_horario}" styleClass="campoFormulario">
                                     <f:selectItem itemLabel="..." itemValue="#{null}" noSelectionOption="true" />
                                     <f:selectItems value="#{generadorTurnosMB.listahorarios}" />
-                                    <p:ajax event="change" listener="#{generadorTurnosMB.seleccionarHorario()}" update=":formcfghorario"/>
+                                    <p:ajax event="change" listener="#{generadorTurnosMB.seleccionarHorario()}" update="labelHoraIni horainidlg :formcfghorario"/>
                                 </p:selectOneMenu>
                                 <p:commandButton title="Horario" icon="ui-icon-clock" styleClass="campoFormulario" style="width: 22px; height: 22px;" onclick="PF('dlghorario').show();"/>                                                            
-                                <p:outputLabel value="Hora Inicial:" styleClass="campoObligatorio" style="display: #{generadorTurnosMB.displayHoraInicial}"/>
+                                <p:outputLabel id="labelHoraIni" value="Hora Inicial:" styleClass="campoObligatorio" style="display: #{generadorTurnosMB.displayHoraInicial}"/>
                                 <p:calendar id="horainidlg" styleClass="campoFormulario" mask="99:99" value="#{generadorTurnosMB.horaInicial}" pattern="HH:mm" timeZone="America/Bogota"  size="6"  timeOnly="true" locale="es" style="display: #{generadorTurnosMB.displayHoraInicial}"/>
                                 <p:outputLabel value="Fecha Inicial:" styleClass="campoObligatorio"/>
                                 <p:calendar navigator="true" id="fechIni" widgetVar="calwidgetini" value="#{generadorTurnosMB.fechaIni}" locale="es" maxlength="10" timeZone="America/Bogota" pattern="dd/MM/yyyy" mask="99/99/9999" size="10" styleClass="campoFormulario"/>                                
