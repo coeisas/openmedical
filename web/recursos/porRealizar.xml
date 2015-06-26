@@ -2,26 +2,22 @@
 <!-- /////////////////////////////// NOTAS DE CONEXIONES /////////////////////////////////////////////////////// -->
 <!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <NOTAS>    
-    192.168.0.106  SERVIDOR APRENDER(VIEJO)  (424683911) 
-    ...            SERVIDOR APRENDER(NUEVO)  (665626976) 
-    190.147.27.113 SERVIDOR ING FRANK        (416296392)
-    
-    186.114.213.195:8080/OPENMEDICAL 
-    WINDOWS FACTURACION 1234
-
-    5011450042 --este es el que tiene 600 registros
-    USUARIO PRUEBAS: jballesteros   CLAVE: 1083867202
-                     bcordoba          55176899    
-    
-    cambio firma medico, la revise y esta bien, 
-    depronto se olvidaron presionar el boton guardar despues de cambiar la foto
-    
-    urbana rural ambas
-    cups como servicios
-    manual tarifario no carga servicios    
-    
-    UPDATE    1) git > commit     2)git > Remote > pull     3)mergue     4)resolve conflicts si aparecen
-    CONFIRM   1) git > commit     2)git > Remote > Push (seleccionar: Specify Git repository location) 3)Cuando aparece el mensaje: Remote repository contains commits..... Es por que otro usuario subio cambios por lo cual primero se debe actualizar       
+    DIRECCIONES
+        192.168.0.106  SERVIDOR APRENDER(VIEJO)  (424683911) 
+        ...            SERVIDOR APRENDER(NUEVO)  (665626976) 
+        190.147.27.113 SERVIDOR ING FRANK        (416296392)
+    WINDOWS
+        186.114.213.195:8080/OPENMEDICAL 
+        1234
+    PRUEBAS
+        5011450042 --este es el que tiene 600 registros
+        USUARIO PRUEBAS: jballesteros   CLAVE: 1083867202
+                         bcordoba              55176899       
+    GLASFISH CONSOLE
+        admin 1234    
+    GITHUB    
+        UPDATE    1) git > commit     2)git > Remote > pull     3)mergue     4)resolve conflicts si aparecen
+        CONFIRM   1) git > commit     2)git > Remote > Push (seleccionar: Specify Git repository location) 3)Cuando aparece el mensaje: Remote repository contains commits..... Es por que otro usuario subio cambios por lo cual primero se debe actualizar       
     
 </NOTAS>
 <!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
