@@ -122,7 +122,7 @@
                     <br/> <br/> 
                 </p:tab>     
                 <p:tab title="#{administradorasMB.tituloTabContratos}" disabled="#{administradorasMB.administradoraSeleccionada == null}">
-                    <br/><br/>
+                    <br/>
                     <div style="margin-left: 15px;">
                         <p:commandButton 
                             rendered="#{administradorasMB.administradoraSeleccionada != null}"
@@ -139,14 +139,12 @@
                             style="font-size: 20px; width: 20px; height: 20px; "/>
                         &nbsp;                        
                         <!-- rendered="# {administradorasMB.administradoraSeleccionada != null}" -->
-                        <p:commandButton 
-                            
+                        <p:commandButton                             
                             rendered="false"
                             title="Copiar Contratos" value="&nbsp;"
                             styleClass="icon-copy fg-lightBlue bg-white no-border"                             
                             oncomplete="PF('dialogoCopiarContratos').show();"
                             style="font-size: 20px; width: 20px; height: 20px; "/>
-
                     </div>
                     <br/>
                     <p:dataTable 
@@ -156,8 +154,8 @@
                         value="#{administradorasMB.listaContratos}" 
                         rowKey="#{contrato.idContrato}"  
                         selection="#{administradorasMB.contratoSeleccionado}" 
-                        paginator="true"
-                        style="width: 600px; height: 300px; margin-left: auto; margin-right: auto;"
+                        paginator="true"                        
+                        scrollHeight="200"
                         rows="10"                                    
                         paginatorPosition="bottom"                                
                         emptyMessage="No hay contratos"
@@ -170,14 +168,17 @@
                         <f:facet name="header">
                             CONTRATOS ASOCIADOS
                         </f:facet>
-                        <p:column headerText="CODIGO" width="1" filterBy="#{contrato.codigoContrato}" filterMatchMode="contains">
+                        <p:column headerText="CODIGO" width="20" filterBy="#{contrato.codigoContrato}" filterMatchMode="contains">
                             #{contrato.codigoContrato}
                         </p:column>                                
                         <p:column headerText="NOMBRE" width="90" filterBy="#{contrato.descripcion}" filterMatchMode="contains">
                             #{contrato.descripcion}
+                        </p:column>            
+                        <p:column headerText="TIPO CONTRATO" width="90" filterBy="#{contrato.tipoContrato.descripcion}" filterMatchMode="contains">
+                            #{contrato.tipoContrato.descripcion}
                         </p:column>                                
-                    </p:dataTable>  
-                    <br/>
+                    </p:dataTable>                      
+                    <br/>                    
                 </p:tab>
             </p:tabView>
         </h:form>

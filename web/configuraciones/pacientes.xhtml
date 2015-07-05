@@ -205,13 +205,13 @@
                     <table style="margin: 20px; margin-left: auto; margin-right: auto;">
                         <tr>
                             <td>   
-                                <p:outputLabel   styleClass="campoNoObligatorio" value="EPS"/> 
-                                <p:selectOneMenu styleClass="campoFormulario" style="width: 340px;" value="#{pacientesMB.administradora}">
+                                <p:outputLabel   styleClass="campoNoObligatorio" value="Administradora"/> 
+                                <p:selectOneMenu styleClass="campoFormulario" style="width: 330px;" value="#{pacientesMB.administradora}">
                                     <f:selectItem itemLabel="" itemValue=""/>
                                     <f:selectItems value="#{aplicacionGeneralMB.listaAdministradoras}" var="administradora" itemLabel="#{administradora.razonSocial}" itemValue="#{administradora.idAdministradora}" />
                                 </p:selectOneMenu>
                                 <p:outputLabel   styleClass="campoNoObligatorio" value="Tipo afiliado"/> 
-                                <p:selectOneMenu styleClass="campoFormulario" style="width: 279px;" value="#{pacientesMB.tipoAfiliado}">
+                                <p:selectOneMenu styleClass="campoFormulario" style="width: 220px;" value="#{pacientesMB.tipoAfiliado}">
                                     <f:selectItem itemLabel="" itemValue=""/>
                                     <f:selectItems value="#{aplicacionGeneralMB.listaTipoAfiliado}" />
                                 </p:selectOneMenu> 
