@@ -73,7 +73,7 @@
                     id="IdTablaPacientes"
                     widgetVar="wvTablaPacientes"
                     var="paciente"
-                    value="#{historiasMB.listaPacientes}"                                    
+                    value="#{historiasMB.listaPacientes}"                     
                     selection="#{historiasMB.pacienteSeleccionadoTabla}"
                     selectionMode="single"
                     rowKey="#{paciente.idPaciente}"
@@ -93,8 +93,8 @@
                         #{paciente.idPaciente}  
                     </p:column>  
                     <p:column headerText="IDENTIFICACION" width="10" filterBy="#{paciente.identificacion}">
-                        #{paciente.identificacion}  
-                    </p:column>  
+                        #{paciente.identificacion}
+                    </p:column>
                     <p:column headerText="NOMBRES" width="90" filterBy="#{paciente.primerNombre}">
                         #{paciente.primerNombre} #{paciente.segundoNombre} #{paciente.primerApellido} #{paciente.segundoApellido}
                     </p:column>

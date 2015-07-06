@@ -237,6 +237,9 @@ public class CfgPacientes implements Serializable {
     private List<FacConsumoServicio> facConsumoServicioList;
     @Transient
     String edad;
+    @Transient
+    String nombre;
+    
     
     public CfgPacientes() {
     }
@@ -266,6 +269,16 @@ public class CfgPacientes implements Serializable {
         }
         return strNombre;
     }
+
+    public String getNombre() {
+        return nombreCompleto();
+    }
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+    
+    
 
     public String getEdad() {
         return edad;

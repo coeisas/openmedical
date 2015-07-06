@@ -96,13 +96,17 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
     FacServicioFacade servicioFacade;
     @EJB
     CfgEmpresaFacade empresaFacade;
+    @EJB
+    CfgPacientesFacade pacientesFachada;
     
 
     //---------------------------------------------------
     //-----------------ENTIDADES ------------------------
     //---------------------------------------------------
     private HcTipoReg tipoRegistroClinicoActual;
-    private List<CfgPacientes> listaPacientes;
+    //private List<CfgPacientes> listaPacientes;
+    private LazyDataModel<CfgPacientes> listaPacientes;
+    //private List<CfgPacientes> listaPacientesFiltered;
     private CfgPacientes pacienteSeleccionadoTabla;
     private CfgPacientes pacienteSeleccionado;
     private CfgPacientes pacienteTmp;
@@ -173,7 +177,9 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
     @PostConstruct
     public void inicializar() {
         recargarMaestrosTxtPredefinidos();
-        listaPacientes = pacientesFacade.buscarOrdenado();
+        //listaPacientes = pacientesFacade.buscarOrdenado();
+        //listaPacientesFiltered= pacientesFacade.buscarOrdenado();
+        listaPacientes = new LazyPacienteDataModel(pacientesFachada);
         listaTipoRegistroClinico = tipoRegCliFacade.buscarTiposRegstroActivos();
         listaPrestadores = usuariosFacade.buscarUsuariosParaHistorias();
         seleccionaTodosRegCliHis();
@@ -2542,21 +2548,21 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
     //---------------------------------------------------
     //-----------------FUNCIONES GET SET ----------------
     //---------------------------------------------------
-//    public LazyDataModel<CfgPacientes> getListaPacientes() {
-//        return listaPacientes;
-//    }
-//
-//    public void setListaPacientes(LazyDataModel<CfgPacientes> listaPacientes) {
-//        this.listaPacientes = listaPacientes;
-//    }
-
-    public List<CfgPacientes> getListaPacientes() {
+    public LazyDataModel<CfgPacientes> getListaPacientes() {
         return listaPacientes;
     }
 
-    public void setListaPacientes(List<CfgPacientes> listaPacientes) {
+    public void setListaPacientes(LazyDataModel<CfgPacientes> listaPacientes) {
         this.listaPacientes = listaPacientes;
     }
+
+//    public List<CfgPacientes> getListaPacientes() {
+//        return listaPacientes;
+//    }
+//
+//    public void setListaPacientes(List<CfgPacientes> listaPacientes) {
+//        this.listaPacientes = listaPacientes;
+//    }
     
 
     public CfgPacientes getPacienteSeleccionado() {
@@ -2869,6 +2875,6 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
 
     public void setAgendaPrestadorMB(AgendaPrestadorMB agendaPrestadorMB) {
         this.agendaPrestadorMB = agendaPrestadorMB;
-    }
+    }    
 
 }
