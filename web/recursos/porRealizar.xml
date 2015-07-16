@@ -4,7 +4,7 @@
 <NOTAS>    
     DIRECCIONES
         192.168.0.106  SERVIDOR APRENDER(VIEJO)  (424683911) 
-        ...            SERVIDOR APRENDER(NUEVO)  (665626976) 
+        ...            SERVIDOR APRENDER(NUEVO)  (118884447) 
         190.147.27.113 SERVIDOR ING FRANK        (416296392)
     WINDOWS
         186.114.213.195:8080/OPENMEDICAL 
@@ -16,8 +16,8 @@
     GLASFISH CONSOLE
         admin 1234    
     GITHUB    
-        UPDATE    1) git > commit     2)git > Remote > pull     3)mergue     4)resolve conflicts si aparecen
-        CONFIRM   1) git > commit     2)git > Remote > Push (seleccionar: Specify Git repository location) 3)Cuando aparece el mensaje: Remote repository contains commits..... Es por que otro usuario subio cambios por lo cual primero se debe actualizar       
+        UPDATE    1) git > commit     2)git > Remote > pull(halar)     3)mergue     4)resolve conflicts si aparecen
+        CONFIRM   1) git > commit     2)git > Remote > Push(empujar) (seleccionar: Specify Git repository location) 3)Cuando aparece el mensaje: Remote repository contains commits..... Es por que otro usuario subio cambios por lo cual primero se debe actualizar       
     
 </NOTAS>
 <!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
