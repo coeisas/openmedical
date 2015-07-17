@@ -30,7 +30,7 @@
                             <p:outputLabel styleClass="campoNoObligatorio" value="Nombre" rendered="#{facturarPacienteMB.pacienteSeleccionado != null}"/>
                             <p:inputText styleClass="labelFormulario" value="#{facturarPacienteMB.nombrePaciente}" readonly="true" rendered="#{facturarPacienteMB.pacienteSeleccionado != null}" style="width: 286px; overflow: hidden; display: inline-block; text-overflow:ellipsis; white-space: nowrap;"/>
                             <p:outputLabel  styleClass="campoNoObligatorio" value="Género: " rendered="#{facturarPacienteMB.pacienteSeleccionado != null}"/>
-                            <p:inputText  styleClass="labelFormulario"    value="#{facturarPacienteMB.generoPaciente}" readonly="true" rendered="#{facturarPacienteMB.pacienteSeleccionado != null}" style="width: 8px;"/>
+                            <p:inputText  styleClass="labelFormulario"    value="#{facturarPacienteMB.generoPaciente}" readonly="true" rendered="#{facturarPacienteMB.pacienteSeleccionado != null}" style="width: 9px;"/>
                             <p:outputLabel styleClass="campoNoObligatorio" value="Edad: " rendered="#{facturarPacienteMB.pacienteSeleccionado != null}"/>
                             <p:inputText   styleClass="labelFormulario"    value="#{facturarPacienteMB.edadPaciente}" readonly="true"  rendered="#{facturarPacienteMB.pacienteSeleccionado != null}" style="width: 60px;"/>
                         </td> 
@@ -763,10 +763,10 @@
                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                     pageLinks="5">                    
                     <p:ajax event="rowSelect" listener="#{facturarPacienteMB.seleccionFilaBuscarFactura}" update=":IdFormFacturacion:IdBtnPdfFactura :IdFormFacturacion:IdBtnAnularFactura" />
-                    <p:column headerText="FECHA" width="95"> 
+                    <p:column headerText="FECHA" width="95" filterBy="#{factura.columna2}"> 
                         #{factura.columna2}
                     </p:column>  
-                    <p:column headerText="NUMERO" width="40" filterBy="#{factura.columna3}">
+                    <p:column headerText="NUMERO" width="50" filterBy="#{factura.columna3}">
                         #{factura.columna3}
                     </p:column>  
                     <p:column headerText="DOCUMENTO" width="90" filterBy="#{factura.columna4}">

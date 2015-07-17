@@ -3,93 +3,41 @@
 <!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <NOTAS>    
     DIRECCIONES
-        192.168.0.106  SERVIDOR APRENDER(VIEJO)  (424683911) 
-        ...            SERVIDOR APRENDER(NUEVO)  (118884447) 
-        190.147.27.113 SERVIDOR ING FRANK        (416296392)
+    192.168.0.106  SERVIDOR APRENDER(VIEJO)  (424683911) 
+    ...            SERVIDOR APRENDER(NUEVO)  (118884447) 
+    190.147.27.113 SERVIDOR ING FRANK        (416296392)
     WINDOWS
-        186.114.213.195:8080/OPENMEDICAL 
-        1234
+    186.114.213.195:8080/OPENMEDICAL 
+    1234
     PRUEBAS
-        5011450042 --este es el que tiene 600 registros
-        USUARIO PRUEBAS: jballesteros   CLAVE: 1083867202
-                         bcordoba              55176899       
+    5011450042 --este es el que tiene 600 registros
+    USUARIO PRUEBAS: jballesteros   CLAVE: 1083867202
+    bcordoba              55176899       
     GLASFISH CONSOLE
-        admin 1234    
+    admin 1234    
     GITHUB    
-        UPDATE    1) git > commit     2)git > Remote > pull(halar)     3)mergue     4)resolve conflicts si aparecen
-        CONFIRM   1) git > commit     2)git > Remote > Push(empujar) (seleccionar: Specify Git repository location) 3)Cuando aparece el mensaje: Remote repository contains commits..... Es por que otro usuario subio cambios por lo cual primero se debe actualizar       
+    UPDATE    1) git > commit     2)git > Remote > pull(halar)     3)mergue     4)resolve conflicts si aparecen
+    CONFIRM   1) git > commit     2)git > Remote > Push(empujar) (seleccionar: Specify Git repository location) 3)Cuando aparece el mensaje: Remote repository contains commits..... Es por que otro usuario subio cambios por lo cual primero se debe actualizar       
     
 </NOTAS>
 <!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
 <!-- //////////////////////////////// SE DEBE REALIZAR ///////////////////////////////////////////////////////// -->
 <!-- /////////////////////////////////////////////////////////////////////////////////////////////////////////// -->
-<ADMINISTRADORAS></ADMINISTRADORAS>
-<SERVICIOS></SERVICIOS>
-<CONSECUTIVOS></CONSECUTIVOS>
-<PERIODOS></PERIODOS>
-<UNIDAD_VALOR></UNIDAD_VALOR>	
-<CONTRATOS></CONTRATOS>
-<CONSUMOS></CONSUMOS>
-<RecepcionCitas.xhtml></RecepcionCitas.xhtml>
-<GENERAL></GENERAL>
-<RECIBOS_DE_CAJA></RECIBOS_DE_CAJA>
-<CITAS_AGENDAS></CITAS_AGENDAS>
-<REGISTROS_CLINICOS></REGISTROS_CLINICOS>
-<FACTURAR>
-    SE PUEDEN POSTERGAR
-    - se debe poder agregar todos los medicamentos(AL TIEMPO) insumos o servicios aplicando un descuento para todos
-    - copiar contratos, manuales etc...
-    - cuando tarifa sea especifica deshabilitar el campo Unidad de Valor    
-    - facturas: una opcion para seleccionar los consumos de Sericios, medicamentos Insumos Paquetes al tiempo (sacar Mensaje para saber que selecciono o desselecciono 	)		
-    - como se hacen los redondeos de valores? (redondear a decena) minimo1 (SIN DECIMALES)   
-    - configurar consulta de LazzyFacturasDataModel (Tome filtros) (NORMAL)
-    
-    NO POSTERGAR    
-    (YA) desde home no funciona dilienciar registro clinico que le falta al prestador    
-    (YA) en home>registros pendientes > (aparecen las citas que esten en espera y no tengan registro clinico)
-         por que las que no estan en espera no se han facturado o no se han puesto en espera
-    (YA) los rips AP(procedimientos) y AC(consulta) dependen del codigo cups    
-    (ya) queda un copago por autorizacion y por factura(asi tenga varios servicios)
-    (YA) para facturar una administradora recorro facturas de pacientes para cada registro verifico el estado de la autorizacion => fac_factura.id_cita.id_adutorizacion
-         la cual tiene un campo llamado 'CERRADO' el que me dice si una factura al tener CERRADA=true se le pasa a la administradora.    
-    (YA) una autorizacion puede estar cerrada pero no se completaron todos los servicios que la componian (hay que recorrer cuales se completaron)
-         los que se completaron se toma como los que se facturaron    
-    (YA) CUANDO SE ENCUENTRA UNA FACTURA CON AUTORIZACION CERRADA SE DEBE BUSCAR TODAS LAS FACTURAS QUE TENGAN ESE MISMO NUMERO DE
-         AUTORIZACION ASI ESTE EN OTRA FECHA Y DEBEN SER AGREGADAS AL ARREGLO QUE CONTIENE TODAS LAS FACTURAS DE LOS PACIENTES    
-    (YA) para facilidad de los puntos anteriores mostrar un mensaje informativo con el conteo de facturas no asicionadas
-         tambien facturas sacadas de otros periodos    
-    (YA) impedir doble facturacion mediante un valor boleano en fac_factura_paciente que me indique si ya se pafturo por administradora
-    (YA) la lista de manuales tarifarios en contratos debe filtrarse por los que ya se esten usando  
-    (YA) validacion de contrato(esta o no vigente)
-    (YA) validacion de turno(puede factura pero provocara errores en rtips)
-    (YA) validacion de consumos(Puede factiurar pero puede tener consumos pendientes)      
-    (YA) en el rip de control el numero que va en el codigo de archivo es el numero de factura que se le va a presentar ala administradora    
-    (YA) se debe solicitar en la interfaz de RIPS es ingresado por el usuario    
-    (YA) desde facturar administradora debe aparecer un boton de generar rips el cual carga los datos a la interfaz de rips, en el dialogo de buscar facturas de administrador    
-    (YA) fac_factura.tipo_ingreso es ambulatorio (POR EL MOMENTO ES FIJO = 1 RTA/ se saca de fac_factura.tipo_ingreso        
-</FACTURAR>	
-<DUDAS>        
-    ? las autorizaciones no tienen fecha de vencimiento?
-    ? RIP AF: codigo administradora tambien toco cambiarlo a logitud de 20 por que supuestamente era de 6
-    ? Una autorización se cierra: 
-      1) cuando se lo realiza manualmente dese autorizaciones, 
-      2) NO CUANDO SE FACTURA sino cuando las citas son atendidas (se crea registro clinico)
-    
-    ? Código del procedimiento: fac_servicio > código_cup < PENDIENTE POR CONSEGUIR ESOS CODIGOS />
-        RTA/ SE ENCUENTRA EN EL CORREO(lo aplico en aprender? optica? o despues?)
-</DUDAS>
-<POSTERGADO>
-    001. REALIZAR MODULO DE BACKUP    
-    003. CADADA REGISTRO CLINICO TIENE UNA SERIE DE VALIDACIONES, SI NO SUPERA ESTAS VALIDACIONES EL REGISTRO CLINICO NO SE MUESTRA
-         EJEMPLO es hombre no muestra el formulario de HC_GINECOLOGIA
-    004. EL GOBIERNO BRINDA EL INCREMENTO PORCENTUAL CUANDO CAMBA UNA TARIFA(SOAT - ISS) EL USUARIO INGRESA EL PORCENTAGE Y EL SISTEMA CALCULA AUTOMATICAMENTE LA NUEVA TARIFA        
-    000. exportar pacientes a csv
-    000. otro home que muestre registros sin cita asociada   RTA/ HACERLO DESPUES 
-    000. EN FACTURACION LOS TEXTOS QUE TENGAN MENSAJE SALGAN CON COLOR DISTINTO(confunde mas postergarlo)  
-    000. al guardar factura sacar PDF(SON DOS FUNCIONES MUY DIFERENTES MUY COMPLICADO, toca usar onclick="this.form.target = '_blank'" ) < RTA/ DEJALO PENDIENTE />     
-    000. el numero de turnos codificarlo mejor(POR EL MOMENTO NO ES SOLUCION)
-    000. formatear valores doouble en datatables(BASTANTE LARGO PONERCE A CORREGIR ESTO) // NO POR EL MOEMNTO
-    000. las interfaces deberian ajustarce lo mas posible al estandar que se ha manejado hasta el momento(botones arriba interfaz abajo)            
-    000. cuando se esta editando un registro de cualquier tabla y el campo es una entidad se debe colocar en null(por el else) sino quedan datos anteriores
-    000. EL CAMPO 'VALOR MENSUAL' SOLO SE ACTIVA SI EL TIPO DE CONTRATO ES 'CAPITADO'    
-</POSTERGADO>
+<REALIZADO>
+    + imortar exportar pacientes(la ayuda viene en el modulo)
+    + descarga de copias de seguridad
+    + copiar manuales tarifarios en contratos
+    + copiar contratos en administradoras (copia contratos y manuales al tiempo)
+    + correcta aplicacion de filtros de busqeda para 'facturas de administradroras' y 'facturas de pacientes'
+    + uso de opcion 'TODOS' cuando en 'Facturar administradora' para que se tomen todos los contratos que tenga la administradora
+    + en manuales tarifarios desactivar casilla 'Unidad de valor' si tipo tarifa es 'Especifica', ademas de colocar tooltips en este dialogo para explicarlo mejor
+    + Permitir edicion de items del manual tarifario
+</REALIZADO>
+<POR_REALIZAR>                
+</POR_REALIZAR>	
+<POSTERGADO>	
+    - otro home con registros sin cita (limitar en rango de fechas)    
+    - cuando se esta editando un registro de cualquier tabla y el campo es una entidad se debe colocar en null(por el else) sino quedan datos anteriores    
+    - colocar tooltips de ayuda en donde mas se pueda
+    - manual de usuario
+</POSTERGADO>	
