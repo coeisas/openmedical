@@ -101,6 +101,7 @@ public class CitasMB extends MetodosGenerales implements Serializable {
     //AGENDA
     private LazyAgendaModel evenModel;
     private ScheduleEvent event = new DefaultScheduleEvent();
+    private Date fechaInit;
     private boolean rend = false;
     private boolean rendBtnReservar = false;
     private boolean rendBtnElegir = false;
@@ -145,6 +146,7 @@ public class CitasMB extends MetodosGenerales implements Serializable {
     @PostConstruct
     private void inicializar() {
         //-----------
+        fechaInit = new Date();
         setListaPacientes(new LazyPacienteDataModel(pacientesFachada));
         listaServicios = new ArrayList();
         crearlistaServicios();
@@ -287,6 +289,7 @@ public class CitasMB extends MetodosGenerales implements Serializable {
 
     public void actualizarPrestador() {
         if (getPrestadorSeleccionado() != null) {
+            setFechaInit(new Date());
             setId_prestador(getPrestadorSeleccionado().getIdentificacion());
             setHayPrestadorSeleccionado(true);
             obtenerNombreCompleto();
@@ -305,7 +308,7 @@ public class CitasMB extends MetodosGenerales implements Serializable {
 
     public void guardarCita() throws ParseException {
         //System.out.println("Guardando cita ...");
-
+        setFechaInit(turnoSeleccionado.getFecha());
         if (pacienteSeleccionado == null) {
             imprimirMensaje("Error", "Necesita ingresar el paciente", FacesMessage.SEVERITY_ERROR);
             return;
@@ -335,12 +338,13 @@ public class CitasMB extends MetodosGenerales implements Serializable {
 
         //variable que controla si el servicio o tipo de cita seleccionado requiere autorizacion
 //        boolean ban = false;
+        FacServicio facServicio;
         if (idServicio != 0) {
-            FacServicio facServicio = facServicioFacade.find(idServicio);
+            facServicio = facServicioFacade.find(idServicio);
 //            if (facServicio.getAutorizacion()) {
             validarAutorizacion(0);
             if (!autorizacionvalidada && autorizacionrequerida) {
-                imprimirMensaje("Error", "Para crear la cita se requiere autorizacion", FacesMessage.SEVERITY_ERROR);
+                imprimirMensaje("Error", "Para crear la cita se requiere autorizacion con sesiones vigentes", FacesMessage.SEVERITY_ERROR);
                 return;
             }
 //                ban = true;
@@ -378,7 +382,7 @@ public class CitasMB extends MetodosGenerales implements Serializable {
                 nuevaCita.setTipoCita(clasificaciones);
             }
             nuevaCita.setFechaRegistro(new Date());
-            nuevaCita.setIdServicio(new FacServicio(idServicio));
+            nuevaCita.setIdServicio(facServicio);
             nuevaCita.setFacturada(false);
             nuevaCita.setAtendida(false);
             nuevaCita.setCancelada(false);
@@ -416,7 +420,7 @@ public class CitasMB extends MetodosGenerales implements Serializable {
             turnosFacade.edit(turnoSeleccionado);
 
             //liberando Selecciones previas
-            setIdServicio(0);
+//            setIdServicio(0);
             imprimirMensaje("Correto", "La cita ha sido creada.", FacesMessage.SEVERITY_INFO);
             loadEvents();
             //carga la lista de citas que sera usada porla tabla que muestra las citas creadas para el prestador elegido
@@ -435,8 +439,8 @@ public class CitasMB extends MetodosGenerales implements Serializable {
     }
 
     public void limpiarServicioMotivoConsulta() {
-        setIdServicio(0);
-        setMotivoConsulta(0);
+//        setIdServicio(0);
+//        setMotivoConsulta(0);
         setAutorizacionSeleccionada(null);
         setNumAutorizacion(null);
         autorizacionvalidada = false;
@@ -1093,6 +1097,14 @@ public class CitasMB extends MetodosGenerales implements Serializable {
 
     public void setRendBtnAutorizacion(boolean rendBtnAutorizacion) {
         this.rendBtnAutorizacion = rendBtnAutorizacion;
+    }
+
+    public Date getFechaInit() {
+        return fechaInit;
+    }
+
+    public void setFechaInit(Date fechaInit) {
+        this.fechaInit = fechaInit;
     }
 
 }
