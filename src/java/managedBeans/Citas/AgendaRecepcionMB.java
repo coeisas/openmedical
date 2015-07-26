@@ -6,6 +6,7 @@
 package managedBeans.Citas;
 
 import beans.utilidades.LazyAgendaModel;
+import beans.utilidades.LazyPacienteDataModel;
 import beans.utilidades.LazyPrestadorDataModel;
 import beans.utilidades.MetodosGenerales;
 import java.io.Serializable;
@@ -38,6 +39,7 @@ import modelo.entidades.FacContrato;
 import modelo.entidades.FacManualTarifario;
 import modelo.entidades.FacManualTarifarioServicio;
 import modelo.fachadas.CfgClasificacionesFacade;
+import modelo.fachadas.CfgPacientesFacade;
 import modelo.fachadas.CfgUsuariosFacade;
 import modelo.fachadas.CitAutorizacionesFacade;
 import modelo.fachadas.CitAutorizacionesServiciosFacade;
@@ -77,15 +79,15 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
     private boolean rendBtnParticular;
     private boolean rendBtnEnEspera;
     private boolean renderAgenda;
-    private boolean haySesionPrestador;
     private String identificacion;
-    private LazyDataModel<CfgUsuarios> listaPrestadores;
+    private LazyDataModel<CfgPacientes> listaPaciente;
     private String display = "none";
     private List<SelectItem> listaEspecialidades;
-    private boolean hayPrestadorSeleccionado;
+    private boolean hayPacienteSeleccionado;
     private boolean renderedBtnFacturar;
     private String idTurno;
-    private CfgUsuarios prestadorActual;
+//    private CfgUsuarios prestadorActual;
+    private CfgPacientes pacienteActual;
     private CitCitas citCita;
     private CitTurnos citTurnos;
 
@@ -117,6 +119,9 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
     CitAutorizacionesFacade autorizacionesFacade;
 
     @EJB
+    CfgPacientesFacade pacienteFachada;
+
+    @EJB
     CitAutorizacionesServiciosFacade autorizacionesServiciosFacade;
 
     @PostConstruct
@@ -124,15 +129,14 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
         setRenderAgenda(false);
         LoginMB loginMB = FacesContext.getCurrentInstance().getApplication().evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{loginMB}", LoginMB.class);
         sede = loginMB.getCentroDeAtencionactual().getIdSede();
-        if (getPrestadorActual() != null) {
-            loadEvents();
-
-        } else {
-            setEvenModel(null);
-        }
-        listaPrestadores = new LazyPrestadorDataModel(usuariosFachada);
-        //setListaPrestadores(prestadoresFachada.findAll());
-        cargarEspecialidadesPrestadores();
+//        if (pacienteActual != null) {
+//            loadEvents();
+//
+//        } else {
+//            setEvenModel(null);
+//        }
+        listaPaciente = new LazyPacienteDataModel(pacienteFachada);
+//        cargarEspecialidadesPrestadores();
     }
 
     public void facturarPaciente() {
@@ -146,18 +150,18 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
     //-------------------------------------------------------------------------------
     //--------------------------METODOS DE CARGA DE PRESTADOR------------------------
     //-------------------------------------------------------------------------------
-    private void cargarEspecialidadesPrestadores() {
-        listaEspecialidades = new ArrayList();
-        List<CfgClasificaciones> lista = usuariosFachada.findEspecialidades();
-        for (CfgClasificaciones especialidad : lista) {
-            if (especialidad != null) {
-                listaEspecialidades.add(new SelectItem(especialidad.getId(), especialidad.getDescripcion()));
-            }
-        }
-    }
+//    private void cargarEspecialidadesPrestadores() {
+//        listaEspecialidades = new ArrayList();
+//        List<CfgClasificaciones> lista = usuariosFachada.findEspecialidades();
+//        for (CfgClasificaciones especialidad : lista) {
+//            if (especialidad != null) {
+//                listaEspecialidades.add(new SelectItem(especialidad.getId(), especialidad.getDescripcion()));
+//            }
+//        }
+//    }
 
     public void functionDisplay() {
-        if (prestadorActual != null) {
+        if (pacienteActual != null) {
             setDisplay("block");
         } else {
             setDisplay("none");
@@ -166,62 +170,34 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
 
     public void validarIdentificacion() {//verifica si existe la identificacion de lo contrario abre un dialogo para seleccionar el prestador de una tabla
         setRenderAgenda(false);
-        CfgUsuarios prestadorTmp = usuariosFachada.buscarPorIdentificacion(identificacion);
-        if (prestadorTmp != null) {
-            prestadorActual = prestadorTmp;
-            identificacion = prestadorActual.getIdentificacion();
+        CfgPacientes pacienteTmp = pacienteFachada.buscarPorIdentificacion(identificacion);
+//        CfgUsuarios prestadorTmp = usuariosFachada.buscarPorIdentificacion(identificacion);
+        if (pacienteTmp != null) {
+            pacienteActual = pacienteTmp;
+            identificacion = pacienteActual.getIdentificacion();
             setRenderAgenda(true);
             loadEvents();
-            setHayPrestadorSeleccionado(true);
-            setNombreCompleto(obtenerNombreCompleto());
+            setHayPacienteSeleccionado(true);
+            setNombreCompleto(pacienteActual.nombreCompleto());
         } else {
-            setHayPrestadorSeleccionado(false);
+            setHayPacienteSeleccionado(false);
             setNombreCompleto(null);
             setDisplay("none");
             if (!identificacion.isEmpty()) {
                 imprimirMensaje("Error", "No se encontro prestador", FacesMessage.SEVERITY_ERROR);
             }
-            setPrestadorActual(null);
+            setPacienteActual(null);
             setIdentificacion(null);
         }
     }
 
-    public void findprestador() {
-        setRenderAgenda(false);
-        if (!identificacion.isEmpty()) {
-            try {
-                prestadorActual = usuariosFachada.buscarPorIdentificacion(identificacion);
-                if (prestadorActual == null) {
-                    setHayPrestadorSeleccionado(false);
-                    imprimirMensaje("Error", "No se encontro el prestador", FacesMessage.SEVERITY_ERROR);
-                    setNombreCompleto(null);
-                } else {
-                    setPrestadorActual(prestadorActual);
-                    setRenderAgenda(true);
-                    loadEvents();
-                    setHayPrestadorSeleccionado(true);
-                    setNombreCompleto(obtenerNombreCompleto());
-                }
-                functionDisplay();
-            } catch (Exception e) {
-                imprimirMensaje("Error", "Ingrese un codigo de prestador valido", FacesMessage.SEVERITY_ERROR);
-                setHayPrestadorSeleccionado(false);
-                setNombreCompleto(null);
-                setDisplay("none");
-            }
-        } else {
-            setPrestadorActual(null);
-            functionDisplay();
-            setHayPrestadorSeleccionado(false);
-            setNombreCompleto(null);
-        }
-    }
-
-    public void actualizarPrestador() {
-        if (prestadorActual != null) {
-            setIdentificacion(prestadorActual.getIdentificacion());
-            setHayPrestadorSeleccionado(true);
-            obtenerNombreCompleto();
+    public void actualizarPaciente() {
+        if (pacienteActual != null) {
+            setIdentificacion(pacienteActual.getIdentificacion());
+            setNombreCompleto(pacienteActual.nombreCompleto());
+            setHayPacienteSeleccionado(true);
+            loadEvents();
+//            obtenerNombreCompleto();
         }
         functionDisplay();
     }
@@ -236,8 +212,8 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
 
     public void loadEvents() {
         setRenderAgenda(false);
-        if (prestadorActual != null) {
-            Object[] horas = turnosfacade.MinDateMaxDate(prestadorActual.getIdUsuario(), sede);
+        if (pacienteActual != null) {
+            Object[] horas = citasFacade.MinDateMaxDate(pacienteActual.getIdPaciente(), sede);
             if (horas[0] != null) {
                 setMinTime(establerLimitesAgenda((Date) horas[0]));
                 Date aux = (Date) horas[1];
@@ -249,28 +225,11 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
                 }
                 setMaxTime(establerLimitesAgenda(aux));
                 setRenderAgenda(true);
-                setEvenModel(new LazyAgendaModel(getPrestadorActual().getIdUsuario(), sede, turnosfacade, citasFacade, "recepcionCitas"));
+                setEvenModel(new LazyAgendaModel(pacienteActual.getIdPaciente(), sede, turnosfacade, citasFacade, "recepcionCitas"));
             } else {
-                imprimirMensaje("Información", "El prestador no tiene agenda", FacesMessage.SEVERITY_WARN);
+                imprimirMensaje("Información", "El paciente no tiene citas", FacesMessage.SEVERITY_WARN);
             }
         }
-    }
-
-    private String obtenerNombreCompleto() {
-        setNombreCompleto("");
-        if (prestadorActual.getPrimerNombre() != null) {
-            setNombreCompleto(getNombreCompleto() + prestadorActual.getPrimerNombre());
-        }
-        if (prestadorActual.getSegundoNombre() != null) {
-            setNombreCompleto(getNombreCompleto() + " " + prestadorActual.getSegundoNombre());
-        }
-        if (prestadorActual.getPrimerApellido() != null) {
-            setNombreCompleto(getNombreCompleto() + " " + prestadorActual.getPrimerApellido());
-        }
-        if (prestadorActual.getSegundoApellido() != null) {
-            setNombreCompleto(getNombreCompleto() + " " + prestadorActual.getSegundoApellido());
-        }
-        return getNombreCompleto();
     }
 
     public void onEventSelect(SelectEvent selectEvent) {
@@ -554,14 +513,6 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
         this.event = event;
     }
 
-    public CfgUsuarios getPrestadorActual() {
-        return prestadorActual;
-    }
-
-    public void setPrestadorActual(CfgUsuarios prestadorActual) {
-        this.prestadorActual = prestadorActual;
-    }
-
     public String getNombreCompleto() {
         return nombreCompleto;
     }
@@ -594,14 +545,6 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
         this.citTurnos = citTurnos;
     }
 
-    public boolean isHaySesionPrestador() {
-        return haySesionPrestador;
-    }
-
-    public void setHaySesionPrestador(boolean haySesionPrestador) {
-        this.haySesionPrestador = haySesionPrestador;
-    }
-
     public boolean isRendBtnCancelar() {
         return rendBtnCancelar;
     }
@@ -616,14 +559,6 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
 
     public void setRendBtnAutorizar(boolean rendBtnAutorizar) {
         this.rendBtnAutorizar = rendBtnAutorizar;
-    }
-
-    public LazyDataModel<CfgUsuarios> getListaPrestadores() {
-        return listaPrestadores;
-    }
-
-    public void setListaPrestadores(LazyDataModel<CfgUsuarios> listaPrestadores) {
-        this.listaPrestadores = listaPrestadores;
     }
 
     public String getDisplay() {
@@ -642,12 +577,12 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
         this.listaEspecialidades = listaEspecialidades;
     }
 
-    public boolean isHayPrestadorSeleccionado() {
-        return hayPrestadorSeleccionado;
+    public boolean isHayPacienteSeleccionado() {
+        return hayPacienteSeleccionado;
     }
 
-    public void setHayPrestadorSeleccionado(boolean hayPrestadorSeleccionado) {
-        this.hayPrestadorSeleccionado = hayPrestadorSeleccionado;
+    public void setHayPacienteSeleccionado(boolean hayPacienteSeleccionado) {
+        this.hayPacienteSeleccionado = hayPacienteSeleccionado;
     }
 
     public boolean isRendBtnParticular() {
@@ -748,6 +683,22 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
 
     public void setEvenModel(LazyAgendaModel evenModel) {
         this.evenModel = evenModel;
+    }
+
+    public CfgPacientes getPacienteActual() {
+        return pacienteActual;
+    }
+
+    public void setPacienteActual(CfgPacientes pacienteActual) {
+        this.pacienteActual = pacienteActual;
+    }
+
+    public LazyDataModel<CfgPacientes> getListaPaciente() {
+        return listaPaciente;
+    }
+
+    public void setListaPaciente(LazyDataModel<CfgPacientes> listaPaciente) {
+        this.listaPaciente = listaPaciente;
     }
 
 }

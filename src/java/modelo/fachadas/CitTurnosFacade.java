@@ -355,7 +355,7 @@ public class CitTurnosFacade extends AbstractFacade<CitTurnos> {
         }
 
     }
-
+    
     public Object[] MinDateMaxDate(int idPrestador, int idSede) {
         try {
             Query query = getEntityManager().createQuery("SELECT MIN(t.horaIni), MAX(t.horaFin) FROM CitTurnos t WHERE t.idPrestador.idUsuario = ?1 AND t.idConsultorio.idSede.idSede = ?2", Object[].class);

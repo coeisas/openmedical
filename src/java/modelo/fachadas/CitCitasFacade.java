@@ -15,6 +15,7 @@ import javax.persistence.TemporalType;
 import modelo.entidades.CfgPacientes;
 import modelo.entidades.CfgUsuarios;
 import modelo.entidades.CitCitas;
+import modelo.entidades.CitTurnos;
 import modelo.entidades.FacAdministradora;
 
 /**
@@ -44,7 +45,7 @@ public class CitCitasFacade extends AbstractFacade<CitCitas> {
         //listado de citas que no tienen registro asociado (solo para un prestador)
         try {
             //String hql = "SELECT a FROM CitCitas a WHERE a.tieneRegAsociado = false AND a.cancelada=false AND a.atendida=true";
-            String hql = "SELECT a FROM CitCitas a WHERE a.tieneRegAsociado = false AND a.cancelada=false AND a.idPrestador.idUsuario = " + idprestador +" AND a.idTurno.estado like 'en_espera'";
+            String hql = "SELECT a FROM CitCitas a WHERE a.tieneRegAsociado = false AND a.cancelada=false AND a.idPrestador.idUsuario = " + idprestador + " AND a.idTurno.estado like 'en_espera'";
             return getEntityManager().createQuery(hql).getResultList();
         } catch (Exception e) {
             System.err.println("" + e.toString());
@@ -448,4 +449,30 @@ public class CitCitasFacade extends AbstractFacade<CitCitas> {
         }
     }
 
+    public List<CitTurnos> obtenerListaTurnosByPacienteAndPeriodo(int idPaciente, int idSede, Date start, Date end) {
+//        t.idConsultorio.idSede.idSede = ?2
+        try {
+            Query query = getEntityManager().createQuery("SELECT c.idTurno FROM CitCitas c WHERE  c.idPaciente.idPaciente = ?1 AND c.idTurno.idConsultorio.idSede.idSede = ?2  AND c.idTurno.fecha >= ?3 AND c.idTurno.fecha < ?4 AND c.cancelada = false ORDER BY c.idTurno.fecha, c.idTurno.horaIni", CitTurnos.class);
+            query.setParameter(1, idPaciente);
+            query.setParameter(2, idSede);
+            query.setParameter(3, start);
+            query.setParameter(4, end);
+            return query.getResultList();
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+    
+    public Object[] MinDateMaxDate(int idPaciente, int idSede) {
+        try {
+            Query query = getEntityManager().createQuery("SELECT MIN(c.idTurno.horaIni), MAX(c.idTurno.horaFin) FROM CitCitas c WHERE c.idPaciente.idPaciente = ?1 AND c.idTurno.idConsultorio.idSede.idSede = ?2 AND c.cancelada = false", Object[].class);
+            query.setParameter(1, idPaciente);
+            query.setParameter(2, idSede);
+            Object[] o = (Object[]) query.getSingleResult();
+            return o;
+        } catch (Exception e) {
+            return null;
+        }
+    }    
 }

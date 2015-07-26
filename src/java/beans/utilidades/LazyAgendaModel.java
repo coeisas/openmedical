@@ -16,15 +16,15 @@ import org.primefaces.model.LazyScheduleModel;
 
 public class LazyAgendaModel extends LazyScheduleModel {
 
-    private final int idPrestador;
+    private final int identificador;
     private final int idSede;
     private final CitTurnosFacade turnosFacade;
     private final CitCitasFacade citasFacade;
     private List<CitTurnos> listaTurnos;
     private final String opcion;//citaUnica, otrasAgendas, generarTurnos
 
-    public LazyAgendaModel(int idPrestador, int idSede, CitTurnosFacade turnosFacade, CitCitasFacade citasFacade, String opcion) {
-        this.idPrestador = idPrestador;
+    public LazyAgendaModel(int identificador, int idSede, CitTurnosFacade turnosFacade, CitCitasFacade citasFacade, String opcion) {
+        this.identificador = identificador;
         this.idSede = idSede;
         this.turnosFacade = turnosFacade;
         this.citasFacade = citasFacade;
@@ -36,7 +36,11 @@ public class LazyAgendaModel extends LazyScheduleModel {
 //        System.out.println("start->" + start);
 //        System.out.println("end->" + end);
         clear();
-        listaTurnos = turnosFacade.obtenerTurnosLazy(idPrestador, idSede, start, end);
+        if (opcion.equals("recepcionCitas")) {
+            listaTurnos = citasFacade.obtenerListaTurnosByPacienteAndPeriodo(identificador, idSede, start, end);
+        } else {
+            listaTurnos = turnosFacade.obtenerTurnosLazy(identificador, idSede, start, end);
+        }
         if (listaTurnos != null) {
             if (!listaTurnos.isEmpty()) {
 //                System.out.println(listaTurnos.size());
@@ -46,6 +50,9 @@ public class LazyAgendaModel extends LazyScheduleModel {
                         break;
                     case "generarTurnos":
                         funcionalidadAgendaCrearTurnos();
+                        break;
+                    case "recepcionCitas":
+                        funcionalidadAgendaRecepcion();
                         break;
                     default:
                         funcionalidadOtrasAgendas();
@@ -104,7 +111,7 @@ public class LazyAgendaModel extends LazyScheduleModel {
         }
     }
 
-    //carga de  eventos para las agendas: recepcion de citas y agenda medico
+    //carga de  eventos para agenda medico
     private void funcionalidadOtrasAgendas() {
         for (CitTurnos turno : listaTurnos) {
             Date inicial = new Date(turno.getFecha().getTime());
@@ -134,6 +141,36 @@ public class LazyAgendaModel extends LazyScheduleModel {
             addEvent(new DefaultScheduleEvent(title, inicial, finaliza, estilo));
         }
     }
+    
+    private void funcionalidadAgendaRecepcion() {
+        for (CitTurnos turno : listaTurnos) {
+            Date inicial = new Date(turno.getFecha().getTime());
+            inicial.setHours(turno.getHoraIni().getHours());
+            inicial.setMinutes(turno.getHoraIni().getMinutes());
+            Date finaliza = new Date(turno.getFecha().getTime());
+            String estilo;
+            String title;
+            CitCitas cita = citasFacade.findCitasByTurno(turno.getIdTurno());
+            if (cita != null) {
+                title = turno.getIdTurno().toString().concat(" - " + cita.getIdPrestador().nombreCompleto());
+                if (turno.getEstado().equals("asignado") && !cita.getAtendida()) {
+                    estilo = "no_atendido";
+                } else if (turno.getEstado().equals("atendido") || cita.getAtendida()) {
+                    estilo = "atendido";
+                } else if (turno.getEstado().equals("en_espera")) {
+                    estilo = "en_espera";
+                } else {
+                    estilo = "libre";
+                }
+            } else {
+                estilo = "libre";
+                title = turno.getIdTurno().toString();
+            }
+            finaliza.setHours(turno.getHoraFin().getHours());
+            finaliza.setMinutes(turno.getHoraFin().getMinutes());
+            addEvent(new DefaultScheduleEvent(title, inicial, finaliza, estilo));
+        }
+    }    
 
     public List<CitTurnos> getListaTurnos() {
         return listaTurnos;
