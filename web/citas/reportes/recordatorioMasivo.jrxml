@@ -43,7 +43,7 @@
 			</rectangle>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="5" y="14" width="172" height="13" uuid="5524b8ca-43ff-4048-b7b5-b9537e875fb2"/>
-				<textFieldExpression><![CDATA[$F{pacientePN} + " " + $F{pacientePA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{pacientePN}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="5" y="1" width="172" height="13" uuid="5c837014-bd74-4c1d-8c85-1d77f3150f6f"/>
@@ -80,7 +80,7 @@
 		<band height="43" splitType="Stretch">
 			<textField isStretchWithOverflow="true">
 				<reportElement x="29" y="10" width="97" height="13" uuid="6c9d88c0-2634-47b9-9612-7b3ac76d36a2"/>
-				<textFieldExpression><![CDATA[$F{prestadorPN} + " " + $F{prestadorPA}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{prestadorPN}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="10" width="29" height="13" uuid="bf378421-2348-4eaa-905c-1bcb700da703"/>
