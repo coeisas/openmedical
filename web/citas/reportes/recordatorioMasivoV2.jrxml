@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="612" pageHeight="792" columnWidth="500" leftMargin="56" rightMargin="56" topMargin="42" bottomMargin="42" uuid="6f2de57c-beea-4c9f-9a76-098c102e6eed">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
+	<property name="ireport.y" value="53"/>
 	<parameter name="parameter1" class="java.lang.String"/>
 	<parameter name="logoEmpresa" class="java.lang.String"/>
 	<parameter name="edad" class="java.lang.String"/>
@@ -120,6 +120,9 @@
 			</line>
 			<line>
 				<reportElement x="0" y="15" width="500" height="1" uuid="8cff7fe1-15b8-424f-809f-0581a172044c"/>
+			</line>
+			<line>
+				<reportElement x="0" y="77" width="500" height="1" uuid="b6ab8c07-afb4-4d9a-920f-1dd78f829c1a"/>
 			</line>
 		</band>
 	</columnHeader>
