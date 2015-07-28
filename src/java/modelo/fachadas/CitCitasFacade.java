@@ -474,5 +474,28 @@ public class CitCitasFacade extends AbstractFacade<CitCitas> {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    public List<CitCitas> buscarCitasParaRecordatorioReporte(CfgPacientes paciente, Date fechaInicial, Date fechaFinal) {
+        try {
+            Query query;
+            if (fechaInicial == null && fechaFinal == null) {
+                query = getEntityManager().createQuery("SELECT c FROM CitCitas c WHERE c.idPaciente = ?1 AND c.cancelada = FALSE AND c.atendida = FALSE ORDER BY c.idTurno.fecha, c.idTurno.horaIni");
+            } else if (fechaInicial != null && fechaFinal == null) {
+                query = getEntityManager().createQuery("SELECT c FROM CitCitas c WHERE c.idPaciente = ?1 AND c.idTurno.fecha >= ?2 AND c.cancelada = FALSE AND c.atendida = FALSE ORDER BY c.idTurno.fecha, c.idTurno.horaIni");
+                query.setParameter(2, fechaInicial);
+            } else if (fechaInicial == null && fechaFinal != null) {
+                query = getEntityManager().createQuery("SELECT c FROM CitCitas c WHERE c.idPaciente = ?1 AND c.idTurno.fecha <= ?3 AND c.cancelada = FALSE AND c.atendida = FALSE ORDER BY c.idTurno.fecha, c.idTurno.horaIni");
+                query.setParameter(3, fechaFinal);
+            } else {
+                query = getEntityManager().createQuery("SELECT c FROM CitCitas c WHERE c.idPaciente = ?1 AND c.idTurno.fecha >= ?2 AND c.idTurno.fecha <= ?3 AND c.cancelada = FALSE AND c.atendida = FALSE ORDER BY c.idTurno.fecha, c.idTurno.horaIni");
+                query.setParameter(2, fechaInicial);
+                query.setParameter(3, fechaFinal);
+            }
+            query.setParameter(1, paciente);
+            return query.getResultList();
+        } catch (Exception e) {
+            return null;
+        }
     }    
 }

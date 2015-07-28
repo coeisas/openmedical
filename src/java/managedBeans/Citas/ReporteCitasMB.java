@@ -139,6 +139,7 @@ public class ReporteCitasMB extends MetodosGenerales implements Serializable {
     private void crearMenuReportes() {
 
         listaReportes.add(new SelectItem(1, "Citas Asignadas"));
+        listaReportes.add(new SelectItem(7, "Recordatorio"));
         listaReportes.add(new SelectItem(2, "Citas - Admnistradora"));
         listaReportes.add(new SelectItem(3, "Citas Canceladas"));
         listaReportes.add(new SelectItem(4, "Oportunidad"));
@@ -156,10 +157,10 @@ public class ReporteCitasMB extends MetodosGenerales implements Serializable {
             RequestContext.getCurrentInstance().execute("PF('dlgfiltrarAutorizaciones').show()");
 
         } else {
-            if (tipoReporte.equals("4") || tipoReporte.equals("5")) {
+            if (tipoReporte.equals("4") || tipoReporte.equals("5") || tipoReporte.equals("7")) {
                 setRenBtnFiltrar(false);
 
-                if (tipoReporte.equals("5")) {
+                if (tipoReporte.equals("5") || tipoReporte.equals("7")) {
                     setRenBtnReporte(false);
                     setDisplayBusquedaPaciente("block");
                 } else {
@@ -448,6 +449,15 @@ public class ReporteCitasMB extends MetodosGenerales implements Serializable {
                 List<CitAutorizaciones> listaAutorizaciones = autorizacionesFacade.buscarAutorizacionReporte(estadoAutorizacion, cerrada, listaAdministradoras, listaPacientes, numAutorizacion);
                 parametros.put("fecha", new Date());
                 autorizacionReporte(listaAutorizaciones, parametros, "/citas/reportes/autorizaciones.jasper");
+                break;
+            case "7":
+                parametros.put("title", "INFORME CITAS ASIGNADAS");
+                parametros.put("paciente", pacienteHC.nombreCompleto());
+                parametros.put("administradora", pacienteHC.getIdAdministradora().getRazonSocial());
+                parametros.put("identificacion", pacienteHC.getTipoIdentificacion().getDescripcion() + " " + pacienteHC.getIdentificacion());
+                lista = citasFacade.buscarCitasParaRecordatorioReporte(pacienteHC, fechaInicial, fechaFinal);
+                parametros.put("sesiones", lista.size());
+                citasReport(lista, parametros, "/citas/reportes/reporteRecordatorio.jasper");
                 break;
         }
 
