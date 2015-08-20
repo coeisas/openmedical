@@ -6,7 +6,7 @@
         <property name="portNumber" value="5432"/>
         <property name="databaseName" value="openmedical"/>
         <property name="User" value="postgres"/>
-        <property name="Password" value="mk2z68qkc9"/>
+        <property name="Password" value="1234"/>
         <property name="URL" value="jdbc:postgresql://localhost:5432/openmedical"/>
         <property name="driverClass" value="org.postgresql.Driver"/>
     </jdbc-connection-pool>
@@ -17,7 +17,7 @@
         <property name="portNumber" value="5432"/>
         <property name="databaseName" value="openmedical2"/>
         <property name="User" value="postgres"/>
-        <property name="Password" value="mk2z68qkc9"/>
+        <property name="Password" value="1234"/>
         <property name="URL" value="jdbc:postgresql://localhost:5432/openmedical2"/>
         <property name="driverClass" value="org.postgresql.Driver"/>
     </jdbc-connection-pool>

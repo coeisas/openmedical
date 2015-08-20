@@ -68,7 +68,12 @@
                                     </f:facet>                                    
                                     <p:column headerText="TURNO" width="50" filterBy="#{cita.idTurno.idTurno}" filterMatchMode="contains">
                                         #{cita.idTurno.idTurno}
-                                    </p:column>                                
+                                    </p:column>  
+                                    <p:column headerText="FECHA">
+                                        <h:outputText value="#{cita.idTurno.fecha}">
+                                            <f:convertDateTime locale="es" timeZone="America/Bogota" pattern="dd/MM/yyyy"/>
+                                        </h:outputText>
+                                    </p:column>
                                     <p:column headerText="PACIENTE" width="100" filterBy="#{cita.idPaciente.primerNombre}" filterMatchMode="contains">
                                         #{cita.idPaciente.primerNombre} #{cita.idPaciente.primerApellido}
                                     </p:column>                                
