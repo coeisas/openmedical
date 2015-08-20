@@ -452,7 +452,8 @@ public class CitCitasFacade extends AbstractFacade<CitCitas> {
     public List<CitTurnos> obtenerListaTurnosByPacienteAndPeriodo(int idPaciente, int idSede, Date start, Date end) {
 //        t.idConsultorio.idSede.idSede = ?2
         try {
-            Query query = getEntityManager().createQuery("SELECT c.idTurno FROM CitCitas c WHERE  c.idPaciente.idPaciente = ?1 AND c.idTurno.idConsultorio.idSede.idSede = ?2  AND c.idTurno.fecha >= ?3 AND c.idTurno.fecha < ?4 AND c.cancelada = false ORDER BY c.idTurno.fecha, c.idTurno.horaIni", CitTurnos.class);
+//            Query query = getEntityManager().createQuery("SELECT c.idTurno FROM CitCitas c WHERE  c.idPaciente.idPaciente = ?1 AND c.idTurno.idConsultorio.idSede.idSede = ?2  AND c.idTurno.fecha >= ?3 AND c.idTurno.fecha < ?4 AND c.cancelada = false ORDER BY c.idTurno.fecha, c.idTurno.horaIni", CitTurnos.class);
+            Query query = getEntityManager().createQuery("SELECT c.idTurno FROM CitCitas c WHERE  c.idPaciente.idPaciente = ?1 AND c.idTurno.idConsultorio.idSede.idSede = ?2  AND c.idTurno.fecha >= ?3 AND c.idTurno.fecha < ?4 AND c.cancelada = false", CitTurnos.class);
             query.setParameter(1, idPaciente);
             query.setParameter(2, idSede);
             query.setParameter(3, start);

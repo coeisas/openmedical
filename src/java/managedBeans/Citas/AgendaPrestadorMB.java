@@ -82,6 +82,8 @@ public class AgendaPrestadorMB extends MetodosGenerales implements Serializable 
 
     @PostConstruct
     private void inicialize() {
+        setMaxTime("8pm");
+        setMinTime("6am");
         setRendAgenda(false);
         if (getLoginMB().getUsuarioActual().getTipoUsuario().getCodigo().compareTo("2") == 0) {
             setPrestadorActual(getLoginMB().getUsuarioActual());
@@ -102,26 +104,26 @@ public class AgendaPrestadorMB extends MetodosGenerales implements Serializable 
     }
 
     public void loadEvents() {
-        Object[] horas = turnosfacade.MinDateMaxDate(prestadorActual.getIdUsuario(), sede);
-        if (horas[0] != null) {
-            setMinTime(establerLimitesAgenda((Date) horas[0]));
-            Date aux = (Date) horas[1];
-            if (aux.getMinutes() > 0) {
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(aux);
-                calendar.add(Calendar.HOUR_OF_DAY, 1);
-                aux = calendar.getTime();
-            }
-            setMaxTime(establerLimitesAgenda(aux));
-            evenModel = new LazyAgendaModel(prestadorActual.getIdUsuario(), sede, turnosfacade, citasFacade, "agendaMedico");
-            setRendAgenda(true);
-        } else {
-            evenModel = null;
-            setRendAgenda(false);
-            if (actualizarDesdeHistorias) {
-                imprimirMensaje("Informacion", "No tiene agenda para esta sede", FacesMessage.SEVERITY_WARN);
-            }
+//        Object[] horas = turnosfacade.MinDateMaxDate(prestadorActual.getIdUsuario(), sede);
+//        if (horas[0] != null) {
+//            setMinTime(establerLimitesAgenda((Date) horas[0]));
+//            Date aux = (Date) horas[1];
+//            if (aux.getMinutes() > 0) {
+//                Calendar calendar = Calendar.getInstance();
+//                calendar.setTime(aux);
+//                calendar.add(Calendar.HOUR_OF_DAY, 1);
+//                aux = calendar.getTime();
+//            }
+//            setMaxTime(establerLimitesAgenda(aux));
+        evenModel = new LazyAgendaModel(prestadorActual.getIdUsuario(), sede, turnosfacade, citasFacade, "agendaMedico");
+        setRendAgenda(true);
+//        } else {
+//            evenModel = null;
+//            setRendAgenda(false);
+        if (actualizarDesdeHistorias) {
+            imprimirMensaje("Informacion", "No tiene agenda para esta sede", FacesMessage.SEVERITY_WARN);
         }
+//        }
     }
 
     private String establerLimitesAgenda(Date date) {

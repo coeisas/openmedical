@@ -7,6 +7,7 @@ package beans.utilidades;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -20,40 +21,40 @@ import org.primefaces.model.SortOrder;
  * @author Mario
  */
 public class LazyTurnosDataModel extends LazyDataModel<CitTurnos> {
-
+    
     private CitTurnosFacade citTurnosFacade;
     private List<Integer> idsprestadores;
     private Date horaIni;
     private Date horaFin;
     private List diasSemana;
-    private Integer sede;
-
+    private List<Integer> consultorios;
+    
     public LazyTurnosDataModel() {
     }
-
+    
     public LazyTurnosDataModel(CitTurnosFacade citTurnosFacade, List<Integer> idsprestadores, Date horaIni, Date horaFin, List diasSemana) {
         this.citTurnosFacade = citTurnosFacade;
         this.idsprestadores = idsprestadores;
         this.horaIni = horaIni;
         this.horaFin = horaFin;
         this.diasSemana = diasSemana;
-        this.sede = 0;
+        this.consultorios = new ArrayList();
     }
-
-    public LazyTurnosDataModel(CitTurnosFacade citTurnosFacade, List<Integer> idsprestadores, Date horaIni, Date horaFin, List diasSemana, Integer sede) {
+    
+    public LazyTurnosDataModel(CitTurnosFacade citTurnosFacade, List<Integer> idsprestadores, Date horaIni, Date horaFin, List diasSemana, List<Integer> consultorios) {
         this.citTurnosFacade = citTurnosFacade;
         this.idsprestadores = idsprestadores;
         this.horaIni = horaIni;
         this.horaFin = horaFin;
         this.diasSemana = diasSemana;
-        this.sede = sede;
+        this.consultorios = consultorios;
     }
-
+    
     @Override
     public Object getRowKey(CitTurnos turno) {
         return turno.getIdTurno();
     }
-
+    
     @Override
     public List<CitTurnos> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         //filter
@@ -73,7 +74,7 @@ public class LazyTurnosDataModel extends LazyDataModel<CitTurnos> {
             return data;
         }
     }
-
+    
     private List<CitTurnos> loadTurnos(int offset, int limit, Map<String, Object> filters) {
         List<CitTurnos> data;
         String sql = "";
@@ -101,25 +102,13 @@ public class LazyTurnosDataModel extends LazyDataModel<CitTurnos> {
         }
         String query;
         String queryCount;
-        query = "SELECT * FROM cit_turnos JOIN cfg_consultorios ON cfg_consultorios.id_consultorio = cit_turnos.id_consultorio JOIN cfg_usuarios ON id_prestador = id_usuario WHERE cfg_consultorios.id_sede = " + sede + " AND id_prestador IN (";
-        queryCount = "SELECT COUNT(id_turno) FROM cit_turnos JOIN cfg_consultorios ON cfg_consultorios.id_consultorio = cit_turnos.id_consultorio JOIN cfg_usuarios ON id_prestador = id_usuario WHERE cfg_consultorios.id_sede = " + sede + " AND id_prestador IN (";
-        int i = idsprestadores.size();
-        int indx = 1;
-        for (Integer id : idsprestadores) {
-            query += id;
-            queryCount += id;
-            if (indx < i) {
-                query += ", ";
-                queryCount += ", ";
-            }
-            indx++;
-        }
+        query = "SELECT * FROM cit_turnos WHERE id_consultorio IN (" + listToString(consultorios) + ") AND id_prestador IN (" + listToString(idsprestadores);
+        queryCount = "SELECT COUNT(id_turno) FROM cit_turnos WHERE id_consultorio IN (" + listToString(consultorios) + ") AND id_prestador IN ("+listToString(idsprestadores);
         query += ") AND estado = 'disponible' AND fecha >= current_date";
-        queryCount += ") AND estado = 'disponible' AND fecha >= current_date";
-
+        queryCount += ") AND estado = 'disponible' AND fecha >= current_date";     
         if (filters.isEmpty()) {
-            data = citTurnosFacade.findTurnosDisponiblesByPrestadoresLazyNative(query.concat(sql), idsprestadores, 0, horaIni, horaFin, diasSemana, offset, limit);
-            int elementos = citTurnosFacade.totalTurnosByPrestadoresLazyNative(queryCount.concat(sql), idsprestadores, 0, horaIni, horaFin, diasSemana);
+            data = citTurnosFacade.findTurnosDisponiblesByPrestadoresLazyNative(query.concat(sql), offset, limit);
+            int elementos = citTurnosFacade.totalTurnosByPrestadoresLazyNative(queryCount.concat(sql));
             this.setRowCount(elementos);
         } else {
             int especialidad = 0;
@@ -136,17 +125,34 @@ public class LazyTurnosDataModel extends LazyDataModel<CitTurnos> {
                             String aux = entry.getValue().toString();
                             Date fecha = ft.parse(aux);
                             ft = new SimpleDateFormat("yyyy-MM-dd");
-                            sql += " AND cit_turnos.fecha = '"+ft.format(fecha)+"'";
-                        } catch (ParseException pe){
+                            sql += " AND cit_turnos.fecha = '" + ft.format(fecha) + "'";
+                        } catch (ParseException pe) {
                             sql += "";
                         }
                         break;
                 }
             }
-            int elementos = citTurnosFacade.totalTurnosByPrestadoresLazyNative(queryCount.concat(sql), idsprestadores, especialidad, horaIni, horaFin, diasSemana);
+            int elementos = citTurnosFacade.totalTurnosByPrestadoresLazyNative(queryCount.concat(sql));
             this.setRowCount(elementos);
-            data = citTurnosFacade.findTurnosDisponiblesByPrestadoresLazyNative(query.concat(sql), idsprestadores, especialidad, horaIni, horaFin, diasSemana, offset, limit);
+            data = citTurnosFacade.findTurnosDisponiblesByPrestadoresLazyNative(query.concat(sql), offset, limit);
         }
         return data;
+    }
+    
+    private String listToString(List<Integer> lista) {
+        String aux = "";
+        int i = lista.size();
+        int indx = 1;
+        for (Integer id : lista) {
+            aux += id;
+//            queryCount += id;
+            if (indx < i) {
+                aux += ", ";
+//                queryCount += ", ";
+            }
+            indx++;
+        }
+        return aux;
+        
     }
 }

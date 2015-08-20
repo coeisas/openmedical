@@ -336,11 +336,16 @@ public class ReporteCitasMB extends MetodosGenerales implements Serializable {
         try (ServletOutputStream servletOutputStream = httpServletResponse.getOutputStream()) {
             httpServletResponse.setContentType("application/pdf");
             ServletContext servletContext = (ServletContext) facesContext.getExternalContext().getContext();
-            String ruta = servletContext.getRealPath("/citas/reportes/recordatorioMasivoV2.jasper");
+//            String ruta = servletContext.getRealPath("/citas/reportes/recordatorioMasivoV2.jasper");
+            String ruta = servletContext.getRealPath("/citas/reportes/reporteRecordatorio.jasper");
             Map<String, Object> parametros = new HashMap<>();
             parametros.put("logoEmpresa", logoEmpresa);
             parametros.put("sesiones", sesiones);
-            parametros.put("edad", edad);
+//            parametros.put("edad", edad);
+                parametros.put("title", "INFORME CITAS ASIGNADAS");
+                parametros.put("paciente", paciente.nombreCompleto());
+                parametros.put("administradora", paciente.getIdAdministradora().getRazonSocial());
+                parametros.put("identificacion", paciente.getTipoIdentificacion().getDescripcion() + " " + paciente.getIdentificacion());        
             JasperPrint jasperPrint = JasperFillManager.fillReport(ruta, parametros, beanCollectionDataSource);
             JasperExportManager.exportReportToPdfStream(jasperPrint, servletOutputStream);
             FacesContext.getCurrentInstance().responseComplete();

@@ -14,7 +14,7 @@
     </context-param>
     <context-param>
         <param-name>uploadDirectory</param-name>
-        <param-value>windows</param-value>
+        <param-value>linux</param-value>
     </context-param>
     
     <context-param>

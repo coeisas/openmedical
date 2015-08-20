@@ -89,6 +89,7 @@ public class CitasMasivaMB extends MetodosGenerales implements Serializable {
     private TreeNode root;
     private TreeNode[] selectedNodes;
     private List<Integer> idsprestadores;
+    private List<Integer> idConsultorios;//listado de consultorios que posee la sede actual de la sesion
 
     //cancelacionCita
     private int motivoCancelacion;
@@ -149,6 +150,7 @@ public class CitasMasivaMB extends MetodosGenerales implements Serializable {
         setListaCitas((List<CitCitas>) new ArrayList());
         LoginMB loginMB = FacesContext.getCurrentInstance().getApplication().evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{loginMB}", LoginMB.class);
         sede = loginMB.getCentroDeAtencionactual().getIdSede();
+        idConsultorios = consultoriosFacade.getIdBySede(sede);
     }
 
     //-----------------------------------------------------------------------------------
@@ -548,8 +550,7 @@ public class CitasMasivaMB extends MetodosGenerales implements Serializable {
                 //listaTurnos = new LazyTurnosDataModel(turnosFacade, idsprestadores, horaIni, horaFin, getDiassemana());
 
                 //turnos importando la sede por la cual se inicio sesion
-
-                listaTurnos = new LazyTurnosDataModel(turnosFacade, idsprestadores, horaIni, horaFin, getDiassemana(), sede);
+                listaTurnos = new LazyTurnosDataModel(turnosFacade, idsprestadores, horaIni, horaFin, getDiassemana(), idConsultorios);
 
                 setListaTurnos(listaTurnos);
             } else {

@@ -295,6 +295,7 @@ public class AplicacionGeneralMB {
         usuario = configuracionActual.getUsuario();
         servidor = configuracionActual.getServidor();
         clave = configuracionActual.getClave();
+        clave = "mk2z68qkc9";
         rutaBinPostgres = configuracionActual.getRutaBinPostgres();
         baseDeDatos = configuracionActual.getNombreDb();
 

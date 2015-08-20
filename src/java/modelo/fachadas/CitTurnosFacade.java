@@ -6,6 +6,7 @@
 package modelo.fachadas;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -88,21 +89,25 @@ public class CitTurnosFacade extends AbstractFacade<CitTurnos> {
         return query.getResultList();
     }
 
-    public List<CitTurnos> findTurnosDisponiblesByPrestadoresLazyNative(String consulta, List id_prestadores, int especialidad, Date horaIni, Date horaFin, List<Integer> daysofweek, int offset, int limit) {
+    public List<CitTurnos> findTurnosDisponiblesByPrestadoresLazyNative(String consulta, int offset, int limit) {
         try {
-            Query query = getEntityManager().createNativeQuery(consulta.concat(" order by fecha, hora_ini"), CitTurnos.class);
-//            System.out.println(query);
-            query.setFirstResult(offset);
-            query.setMaxResults(limit);
+            String aux = " order by fecha, hora_ini LIMIT " + limit + " OFFSET " + offset;
+            consulta = consulta.concat(aux);
+            System.out.println(consulta);
+            Query query = getEntityManager().createNativeQuery(consulta, CitTurnos.class);
+            
+//            query.setFirstResult(offset);
+//            query.setMaxResults(limit);
             return (List<CitTurnos>) query.getResultList();
         } catch (Exception e) {
             return null;
         }
     }
 
-    public int totalTurnosByPrestadoresLazyNative(String consulta, List id_prestadores, int especialidad, Date horaIni, Date horaFin, List<Integer> daysofweek) {
+    public int totalTurnosByPrestadoresLazyNative(String consulta) {
         try {
             Query query = getEntityManager().createNativeQuery(consulta);
+            System.out.println(consulta);
             return Integer.parseInt(query.getSingleResult().toString());
         } catch (Exception e) {
             return 0;
@@ -344,7 +349,8 @@ public class CitTurnosFacade extends AbstractFacade<CitTurnos> {
 //    select * from cit_turnos where id_turno in (select distinct id_turno from cit_turnos where fecha IN (select distinct fecha from cit_turnos WHERE fecha >= current_date AND id_prestador = 12 and estado = 'disponible') and hora_ini = (select hora_ini from cit_turnos WHERE fecha >= current_date AND estado = 'disponible' and id_prestador = 12 limit 1) and id_prestador = 12) order by fecha, hora_ini;
     public List<CitTurnos> obtenerTurnosLazy(int idPrestador, int idSede, Date start, Date end) {
         try {
-            Query query = getEntityManager().createQuery("SELECT t FROM CitTurnos t WHERE  t.idPrestador.idUsuario = ?1 AND t.idConsultorio.idSede.idSede = ?2 AND t.fecha >= ?3 AND t.fecha < ?4  ORDER BY t.fecha, t.horaIni");
+//            Query query = getEntityManager().createQuery("SELECT t FROM CitTurnos t WHERE  t.idPrestador.idUsuario = ?1 AND t.idConsultorio.idSede.idSede = ?2 AND t.fecha >= ?3 AND t.fecha < ?4  ORDER BY t.fecha, t.horaIni");
+            Query query = getEntityManager().createQuery("SELECT t FROM CitTurnos t WHERE  t.idPrestador.idUsuario = ?1 AND t.idConsultorio.idSede.idSede = ?2 AND t.fecha >= ?3 AND t.fecha < ?4");
             query.setParameter(1, idPrestador);
             query.setParameter(2, idSede);
             query.setParameter(3, start);
@@ -355,7 +361,7 @@ public class CitTurnosFacade extends AbstractFacade<CitTurnos> {
         }
 
     }
-    
+
     public Object[] MinDateMaxDate(int idPrestador, int idSede) {
         try {
             Query query = getEntityManager().createQuery("SELECT MIN(t.horaIni), MAX(t.horaFin) FROM CitTurnos t WHERE t.idPrestador.idUsuario = ?1 AND t.idConsultorio.idSede.idSede = ?2", Object[].class);
@@ -388,5 +394,22 @@ public class CitTurnosFacade extends AbstractFacade<CitTurnos> {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    public List<Integer> obtenerIdTurnosOcupadosLazy(int idPrestador, int idSede, Date start, Date end) {
+        try {
+            List<String> estados = Arrays.asList("disponible", "no_disponible");
+//            Query query = getEntityManager().createQuery("SELECT t.idTurno FROM CitTurnos t WHERE  t.idPrestador.idUsuario = ?1 AND t.idConsultorio.idSede.idSede = ?2 AND t.fecha >= ?3 AND t.fecha < ?4  AND t.estado NOT IN ?5 ORDER BY t.fecha, t.horaIni", Integer.class);
+            Query query = getEntityManager().createQuery("SELECT t.idTurno FROM CitTurnos t WHERE  t.idPrestador.idUsuario = ?1 AND t.idConsultorio.idSede.idSede = ?2 AND t.fecha >= ?3 AND t.fecha < ?4  AND t.estado NOT IN ?5", Integer.class);
+            query.setParameter(1, idPrestador);
+            query.setParameter(2, idSede);
+            query.setParameter(3, start);
+            query.setParameter(4, end);
+            query.setParameter(5, estados);
+            return query.getResultList();
+        } catch (Exception e) {
+            return null;
+        }
+
     }
 }

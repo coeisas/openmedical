@@ -23,6 +23,8 @@ public class LazyAgendaModel extends LazyScheduleModel {
     private List<CitTurnos> listaTurnos;
     private final String opcion;//citaUnica, otrasAgendas, generarTurnos
 
+    private List<Integer> idTurnosOcupados;
+
     public LazyAgendaModel(int identificador, int idSede, CitTurnosFacade turnosFacade, CitCitasFacade citasFacade, String opcion) {
         this.identificador = identificador;
         this.idSede = idSede;
@@ -36,6 +38,7 @@ public class LazyAgendaModel extends LazyScheduleModel {
 //        System.out.println("start->" + start);
 //        System.out.println("end->" + end);
         clear();
+        idTurnosOcupados = turnosFacade.obtenerIdTurnosOcupadosLazy(identificador, idSede, start, end);
         if (opcion.equals("recepcionCitas")) {
             listaTurnos = citasFacade.obtenerListaTurnosByPacienteAndPeriodo(identificador, idSede, start, end);
         } else {
@@ -73,14 +76,14 @@ public class LazyAgendaModel extends LazyScheduleModel {
                 estilo = "disponible";
             } else if (turno.getEstado().equals("asignado") || turno.getEstado().equals("en_espera") || turno.getEstado().equals("atendido")) {
                 estilo = "asignado";
+                CitCitas c = citasFacade.findCitasByTurno(turno.getIdTurno());
+                if (c != null) {
+                    title = title.concat(" - " + c.getIdPaciente().nombreCompleto());
+                }
             } else if (turno.getEstado().equals("no_disponible")) {
                 estilo = "no_disponible";
             } else {
                 estilo = "reservado";
-            }
-            CitCitas c = citasFacade.findCitasByTurno(turno.getIdTurno());
-            if (c != null) {
-                title = title.concat(" - " + c.getIdPaciente().nombreCompleto());
             }
             finaliza.setHours(turno.getHoraFin().getHours());
             finaliza.setMinutes(turno.getHoraFin().getMinutes());
@@ -120,7 +123,10 @@ public class LazyAgendaModel extends LazyScheduleModel {
             Date finaliza = new Date(turno.getFecha().getTime());
             String estilo;
             String title;
-            CitCitas cita = citasFacade.findCitasByTurno(turno.getIdTurno());
+            CitCitas cita = null;
+            if (idTurnosOcupados.contains(turno.getIdTurno())) {
+                cita = citasFacade.findCitasByTurno(turno.getIdTurno());
+            }
             if (cita != null) {
                 title = turno.getIdTurno().toString().concat(" - " + cita.getIdPaciente().nombreCompleto());
                 if (turno.getEstado().equals("asignado") && !cita.getAtendida()) {
@@ -141,7 +147,7 @@ public class LazyAgendaModel extends LazyScheduleModel {
             addEvent(new DefaultScheduleEvent(title, inicial, finaliza, estilo));
         }
     }
-    
+
     private void funcionalidadAgendaRecepcion() {
         for (CitTurnos turno : listaTurnos) {
             Date inicial = new Date(turno.getFecha().getTime());
@@ -170,7 +176,7 @@ public class LazyAgendaModel extends LazyScheduleModel {
             finaliza.setMinutes(turno.getHoraFin().getMinutes());
             addEvent(new DefaultScheduleEvent(title, inicial, finaliza, estilo));
         }
-    }    
+    }
 
     public List<CitTurnos> getListaTurnos() {
         return listaTurnos;

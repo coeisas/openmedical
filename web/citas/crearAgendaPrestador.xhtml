@@ -113,7 +113,7 @@
                 </table>
             </p:panel>
             <br/>
-            <p:schedule id="schTurnos" draggable="false" resizable="false" value="#{generadorTurnosMB.evenModel}" widgetVar="agenda" locale="es" timeZone="America/Bogota" style="height: 100%" timeFormat="hh:mm" allDaySlot="false"/>
+            <p:schedule id="schTurnos" draggable="false" resizable="false" value="#{generadorTurnosMB.evenModel}" widgetVar="agenda" locale="es" timeZone="America/Bogota" style="height: 100%" timeFormat="hh:mm" allDaySlot="false" minTime="6am" maxTime="8pm" view="agendaDay" rightHeaderTemplate="agendaDay"/>
             <p:blockUI block=":cuerpo" trigger="cbtnguardar">
                 <p:panelGrid id="blockcontent" columns="2"> 
                     <h:graphicImage value="../../recursos/img/loading.gif" height="30px" width="30px" />

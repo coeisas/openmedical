@@ -32,8 +32,8 @@
 	</background>
 	<title>
 		<band height="39" splitType="Stretch">
-			<rectangle>
-				<reportElement x="0" y="0" width="532" height="39" uuid="75e29d5e-2afd-44cc-859e-972e9af15018"/>
+			<rectangle radius="10">
+				<reportElement x="0" y="0" width="532" height="39" uuid="72316857-2842-4791-9981-7b9dced25bd3"/>
 			</rectangle>
 			<textField>
 				<reportElement x="0" y="0" width="532" height="39" uuid="d700a0ae-f6a8-4b6d-b16e-813b70a6bf43"/>
@@ -43,7 +43,7 @@
 				<textFieldExpression><![CDATA[$F{empresa}.toUpperCase()]]></textFieldExpression>
 			</textField>
 			<image scaleImage="RetainShape">
-				<reportElement x="1" y="1" width="117" height="37" uuid="82f82cfc-6995-48ac-af34-de9f4e555101"/>
+				<reportElement x="7" y="1" width="117" height="37" uuid="82f82cfc-6995-48ac-af34-de9f4e555101"/>
 				<imageExpression><![CDATA[$P{logoEmpresa}]]></imageExpression>
 			</image>
 		</band>

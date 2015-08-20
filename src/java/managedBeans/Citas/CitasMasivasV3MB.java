@@ -158,6 +158,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
                 pacienteSeleccionado = pacientesFacade.buscarPorIdentificacion(getIdentificacion());
                 if (pacienteSeleccionado == null) {
                     imprimirMensaje("Error", "No se encontro el paciente", FacesMessage.SEVERITY_ERROR);
+                    RequestContext.getCurrentInstance().update("msg");
                     setHayPacienteSeleccionado(false);
                     setDisplayPaciente("none");
                 } else {
@@ -206,11 +207,13 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
         if (pacienteSeleccionado.getIdAdministradora() == null) {
             RequestContext.getCurrentInstance().update("idFormDetallesCita");
             imprimirMensaje("Error", "El paciente no tiene asignado una Admnistradora y tampoco esta especificado como Particular", FacesMessage.SEVERITY_ERROR);
+            RequestContext.getCurrentInstance().update("msg");
             return;
         }
         if (idPaquete == 0) {
             RequestContext.getCurrentInstance().update("idFormDetallesCita");
             imprimirMensaje("Error", "Elija algun paquete", FacesMessage.SEVERITY_ERROR);
+            RequestContext.getCurrentInstance().update("msg");
             return;
         }
         if (!pacienteSeleccionado.getIdAdministradora().getCodigoAdministradora().equals("1")) {//la administradora con codigo 1 corresponde a particular por tanto no requiere autorizacion                                       
@@ -221,19 +224,22 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
         if (autorizacionRequerida) {
             RequestContext.getCurrentInstance().update("idFormDetallesCita");
 //            imprimirMensaje("Error", "Alguno de los servicios incluidos en el paquete requiren de autorizacion", FacesMessage.SEVERITY_ERROR);
-            return;
+            return;            
         }
         if (fechaInicial == null) {
             RequestContext.getCurrentInstance().update("idFormDetallesCita");
             imprimirMensaje("Error", "Elija fecha inicial", FacesMessage.SEVERITY_ERROR);
+            RequestContext.getCurrentInstance().update("msg");
             return;
         }
         if (pacienteSeleccionado.getIdAdministradora().getCodigoAdministradora().equals("1")) {//para paciente particular se limita las citas del paquete mediante la fecha final
             if (fechaFinal == null) {
                 imprimirMensaje("Error", "Elija fecha final", FacesMessage.SEVERITY_ERROR);
+                RequestContext.getCurrentInstance().update("msg");
                 return;
             } else if (fechaFinal.before(fechaInicial)) {
                 imprimirMensaje("Error", "verifique fecha final", FacesMessage.SEVERITY_ERROR);
+                RequestContext.getCurrentInstance().update("msg");
                 return;
             }
         }
@@ -242,6 +248,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
         Date fechaActual = formatter.parse(formatter.format(fecha));
         if (fechaInicial.before(fechaActual)) {
             imprimirMensaje("Error", "La fecha inicial es previa a la actual", FacesMessage.SEVERITY_ERROR);
+            RequestContext.getCurrentInstance().update("msg");
             return;
         }
         boolean completo = false;//variable para salir del ciclo
@@ -292,6 +299,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
                             ban = false;
                             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
                             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Informacion", detalle.getIdPrestador().nombreCompleto().toUpperCase() + " no tiene agenda a partir de la fecha " + sdf.format(calendar.getTime())));
+                            RequestContext.getCurrentInstance().update("msg");
                         }
                         break;
                     } else {
@@ -369,6 +377,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
             eliminarTurnosPorFecha(fecha);
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Informacion", "El total de sesiones autorizadas no permiten cumplir completamente con los servicios del paquete a partir de la fecha " + sdf.format(fecha)));
+            RequestContext.getCurrentInstance().update("msg");
         }
         return ban;
     }
@@ -458,10 +467,12 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
         }
         if (autorizacionRequerida) {
             imprimirMensaje("Error", "Alguno de los servicios incluidos en el paquete requiren de autorizacion", FacesMessage.SEVERITY_ERROR);
+            RequestContext.getCurrentInstance().update("msg");
             return;
         }
         if (listaTurnos.isEmpty()) {
             imprimirMensaje("Error", "No hay Turnos Seleccionados", FacesMessage.SEVERITY_ERROR);
+            RequestContext.getCurrentInstance().update("msg");
             return;
         } else {
             int totalTurnosSeleccionados = listaTurnos.size();
@@ -473,6 +484,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
             if (totalTurnosDisponibles != totalTurnosSeleccionados) {
                 listaTurnos.clear();
                 imprimirMensaje("Error", "Almenos un turno de los seleccionados ya no esta disponible. Seleccione nuevamente los Turnos", FacesMessage.SEVERITY_ERROR);
+                RequestContext.getCurrentInstance().update("msg");
                 return;
             }
         }
@@ -557,8 +569,10 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
             RequestContext.getCurrentInstance().execute("PF('dlgCitas').show();");
             if (!error) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Correcto", "Citas Creadas"));
+                RequestContext.getCurrentInstance().update("msg");
             } else {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Informacion", "No tadas las citas se han Creado. Las sesiones autorizadas son insuficientes o nulas"));
+                RequestContext.getCurrentInstance().update("msg");
             }
         }
     }
@@ -603,10 +617,12 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
             } else {
                 autorizacionRequerida = false;
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "El paciente no tiene administradora asociada"));
+                RequestContext.getCurrentInstance().update("msg");
 //            imprimirMensaje("Error", "El paciente no tiene administradora asociada", FacesMessage.SEVERITY_ERROR);
             }
             if (autorizacionRequerida) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Algunos servicios del paquete requieren autorizacion y el paciente no posee una"));
+                RequestContext.getCurrentInstance().update("msg");
 //            imprimirMensaje("Alerta", "Algunos servicios del paquete requieren autorizacion", FacesMessage.SEVERITY_WARN);
             } else {
                 if (!listadoAutorizado.isEmpty()) {//si el listadoAutorizado no esta vacio, se mostrara el dialogo de autorizacion
@@ -680,6 +696,7 @@ public class CitasMasivasV3MB extends MetodosGenerales implements Serializable {
             }
         } else {
             imprimirMensaje("Informacion", "Es necesario elegir un paquete", FacesMessage.SEVERITY_WARN);
+            RequestContext.getCurrentInstance().update("msg");
         }
     }
 
