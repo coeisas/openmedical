@@ -110,10 +110,6 @@ public class CitasMB extends MetodosGenerales implements Serializable {
     private String minTime;
     private String maxTime;
 
-    private List<CitCitas> listaCitas;
-    // lista para reportes
-    // private List<CitCitas> listaCitasDos;
-
     //lista de citas creadas
     private List<SelectItem> listaTipoCitas = null;
     private CitCitas citaSelecionada;
@@ -158,7 +154,6 @@ public class CitasMB extends MetodosGenerales implements Serializable {
         setListaPrestadores(new LazyPrestadorDataModel(usuariosFachada));
         //setListaPrestadores(prestadoresFachada.findAll());
         cargarEspecialidadesPrestadores();
-        listaCitas = new ArrayList();
         LoginMB loginMB = FacesContext.getCurrentInstance().getApplication().evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{loginMB}", LoginMB.class);
         sede = loginMB.getCentroDeAtencionactual().getIdSede();
     }
@@ -306,10 +301,6 @@ public class CitasMB extends MetodosGenerales implements Serializable {
     //---------------------------METODOS DE GESTION DE CITAS-----------------------------
     //-----------------------------------------------------------------------------------
 
-    public void cargarCitas() {
-        //setListaCitas(citasFacade.findCitasByPrestador(idPrestador));
-        setListaCitas(citasFacade.findCitas());
-    }
 
     public void guardarCita() throws ParseException {
         //System.out.println("Guardando cita ...");
@@ -405,7 +396,7 @@ public class CitasMB extends MetodosGenerales implements Serializable {
                 CitAutorizacionesServicios autorizacionServicio = autorizacionesServiciosFacade.buscarServicioPorAutorizacionDisponible(autorizacion.getIdAutorizacion(), idServicio);
                 if (autorizacionServicio != null) {
                     autorizacionServicio.setSesionesPendientes(autorizacionServicio.getSesionesPendientes() - 1);
-                    autorizacionesServiciosFacade.edit(autorizacionServicio);
+                    autorizacionesServiciosFacade.edit(autorizacionServicio);                    
                 }
 //                } else {
 //                    nuevaCita.setIdAutorizacion(null);
@@ -428,14 +419,6 @@ public class CitasMB extends MetodosGenerales implements Serializable {
 //            setIdServicio(0);
             imprimirMensaje("Correto", "La cita ha sido creada.", FacesMessage.SEVERITY_INFO);
             loadEvents();
-            //carga la lista de citas que sera usada porla tabla que muestra las citas creadas para el prestador elegido
-            //cargarCitas();
-
-            //listaCitas.add(citasFacade.findCitasByTurno(turnoSeleccionado.getIdTurno()));
-            //setCitaSelecionada(citasFacade.findCitasByTurno(idTurno));
-            //RequestContext.getCurrentInstance().update("result");
-            //RequestContext context = RequestContext.getCurrentInstance();
-            //context.execute("PF('dlgresult').show();");
         } else {
             imprimirMensaje("Error", "Es necesario seleccionar el paciente", FacesMessage.SEVERITY_ERROR);
         }
@@ -449,8 +432,6 @@ public class CitasMB extends MetodosGenerales implements Serializable {
         setAutorizacionSeleccionada(null);
         setNumAutorizacion(null);
         autorizacionvalidada = false;
-        //setListaCitas(null);
-        //listaCitas = new ArrayList();
     }
 
     public void liberarCampos(int ban) {
@@ -516,10 +497,6 @@ public class CitasMB extends MetodosGenerales implements Serializable {
                 }
             }
             imprimirMensaje("Correcto", "Cita " + citaSelecionada.getIdCita() + " cancelada", FacesMessage.SEVERITY_INFO);
-            //actualiza los items de listaCitas
-            listaCitas.remove(citaSelecionada);
-            setListaCitas(listaCitas);
-            //cargarCitas();
         } else {
             imprimirMensaje("Error", "Cita " + citaSelecionada.getIdCita() + " ya se encuentra cancelada o atendida", FacesMessage.SEVERITY_ERROR);
         }
@@ -753,20 +730,6 @@ public class CitasMB extends MetodosGenerales implements Serializable {
      */
     public void setEstado(boolean estado) {
         this.estado = estado;
-    }
-
-    /**
-     * @return the listaCitas
-     */
-    public List<CitCitas> getListaCitas() {
-        return listaCitas;
-    }
-
-    /**
-     * @param listaCitas the listaCitas to set
-     */
-    public void setListaCitas(List<CitCitas> listaCitas) {
-        this.listaCitas = listaCitas;
     }
 
     /**

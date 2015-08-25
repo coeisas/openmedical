@@ -37,3 +37,4 @@ nbproject/
 *.ear
 /dist/
 >>>>>>> 071c1e5745def17a80287dbd8dd855e1c7c28643
+/build/
