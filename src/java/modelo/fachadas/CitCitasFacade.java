@@ -498,5 +498,16 @@ public class CitCitasFacade extends AbstractFacade<CitCitas> {
         } catch (Exception e) {
             return null;
         }
-    }    
+    }
+    
+    public List<Integer> buscarIdCitasByNumAutorizacion(CfgPacientes paciente, String numAutorizacion){
+        try {
+            Query query = getEntityManager().createQuery("SELECT c.idCita FROM CitCitas c WHERE c.idPaciente = ?1 AND c.idAutorizacion.numAutorizacion = ?2", Integer.class);
+            query.setParameter(1, paciente);
+            query.setParameter(2, numAutorizacion);
+            return query.getResultList();
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }

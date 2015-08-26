@@ -47,63 +47,67 @@ public class HcRegistroFacade extends AbstractFacade<HcRegistro> {
         }
     }
 
-    public List<HcRegistro> buscarFiltradoPorNumeroAutorizacion(int idPaciente, String numAutorizacion) {//buscar registros clinicos filtrando por Numero Autorizacion
+    public List<HcRegistro> buscarFiltradoPorNumeroAutorizacion(int idPaciente, List<Integer> idCitas) {//buscar registros clinicos filtrando por Citas
         try {
-            List<HcRegistro> listaResultado;
-            List<HcRegistro> listaResultadoAux;
-            Query query = getEntityManager().createQuery("SELECT u FROM HcRegistro u WHERE u.idPaciente.idPaciente = ?1 ORDER BY u.fechaReg DESC");
+//            List<HcRegistro> listaResultado;
+//            List<HcRegistro> listaResultadoAux;
+            Query query = getEntityManager().createQuery("SELECT u FROM HcRegistro u WHERE u.idPaciente.idPaciente = ?1 AND u.idCita IN ?2 ORDER BY u.fechaReg DESC");
             query.setParameter(1, idPaciente);
-            listaResultadoAux = query.getResultList();
-            listaResultado = new ArrayList<>();
-            boolean agregar;
-            for (HcRegistro resultado : listaResultadoAux) {
-                List<HcDetalle> hcDetalleList = resultado.getHcDetalleList();
-                agregar = false;
-                for (HcDetalle detalle : hcDetalleList) {
-                    if (detalle.getHcCamposReg().getNombre().contains("autorizacion")) {
-                        if (detalle.getValor().compareTo(numAutorizacion) == 0) {
-                            agregar = true;
-                            break;
-                        }
-                    }
-                }
-                if (agregar) {
-                    listaResultado.add(resultado);
-                }
-            }
-            return listaResultado;
+            query.setParameter(2, idCitas);
+//            listaResultadoAux = query.getResultList();
+//            listaResultado = new ArrayList<>();
+//            boolean agregar;
+//            for (HcRegistro resultado : listaResultadoAux) {
+//                List<HcDetalle> hcDetalleList = resultado.getHcDetalleList();
+//                agregar = false;
+//                for (HcDetalle detalle : hcDetalleList) {
+//                    if (detalle.getHcCamposReg().getNombre().contains("autorizacion")) {
+//                        if (detalle.getValor().compareTo(numAutorizacion) == 0) {
+//                            agregar = true;
+//                            break;
+//                        }
+//                    }
+//                }
+//                if (agregar) {
+//                    listaResultado.add(resultado);
+//                }
+//            }
+//            return listaResultado;
+            return query.getResultList();
         } catch (Exception e) {
             return null;
         }
     }
 
-    public List<HcRegistro> buscarFiltradoPorNumeroAutorizacionYFecha(int idPaciente, Date fechaInicial, Date fechaFinal, String numAutorizacion) {//buscar registros clinicos filtrando por fecha inicial, fecha final y Numero Autorizacion
+    public List<HcRegistro> buscarFiltradoPorNumeroAutorizacionYFecha(int idPaciente, Date fechaInicial, Date fechaFinal, List<Integer> idCitas) {//buscar registros clinicos filtrando por fecha inicial, fecha final y Numero Autorizacion
         try {
-            List<HcRegistro> listaResultado;
-            List<HcRegistro> listaResultadoAux;
-            Query query = getEntityManager().createQuery("SELECT u FROM HcRegistro u WHERE u.idPaciente.idPaciente = ?1 AND u.fechaReg >= ?2 AND u.fechaReg <= ?3 ORDER BY u.fechaReg DESC");
+//            List<HcRegistro> listaResultado;
+//            List<HcRegistro> listaResultadoAux;
+            Query query = getEntityManager().createQuery("SELECT u FROM HcRegistro u WHERE u.idPaciente.idPaciente = ?1 AND u.fechaReg >= ?2 AND u.fechaReg <= ?3 AND u.idCita IN ?4 ORDER BY u.fechaReg DESC");
             query.setParameter(1, idPaciente);
             query.setParameter(2, fechaInicial);
             query.setParameter(3, fechaFinal);
-            listaResultadoAux = query.getResultList();
-            listaResultado = new ArrayList<>();
-            boolean agregar;
-            for (HcRegistro resultado : listaResultadoAux) {
-                List<HcDetalle> hcDetalleList = resultado.getHcDetalleList();
-                agregar = false;
-                for (HcDetalle detalle : hcDetalleList) {
-                    if (detalle.getHcCamposReg().getNombre().contains("autorizacion")) {
-                        if (detalle.getValor().compareTo(numAutorizacion) == 0) {
-                            agregar = true;
-                            break;
-                        }
-                    }
-                }
-                if (agregar) {
-                    listaResultado.add(resultado);
-                }
-            }
-            return listaResultado;
+            query.setParameter(4, idCitas);
+//            listaResultadoAux = query.getResultList();
+//            listaResultado = new ArrayList<>();
+//            boolean agregar;
+//            for (HcRegistro resultado : listaResultadoAux) {
+//                List<HcDetalle> hcDetalleList = resultado.getHcDetalleList();
+//                agregar = false;
+//                for (HcDetalle detalle : hcDetalleList) {
+//                    if (detalle.getHcCamposReg().getNombre().contains("autorizacion")) {
+//                        if (detalle.getValor().compareTo(numAutorizacion) == 0) {
+//                            agregar = true;
+//                            break;
+//                        }
+//                    }
+//                }
+//                if (agregar) {
+//                    listaResultado.add(resultado);
+//                }
+//            }
+//            return listaResultado;
+            return query.getResultList();
         } catch (Exception e) {
             return null;
         }

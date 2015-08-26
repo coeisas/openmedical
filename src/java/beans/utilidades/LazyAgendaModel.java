@@ -49,7 +49,7 @@ public class LazyAgendaModel extends LazyScheduleModel {
 //                System.out.println(listaTurnos.size());
                 switch (opcion) {
                     case "citaUnica":
-                        funcionalidadAgendaCitaUnica();
+                        funcionalidadAgendaCitaUnica();                        
                         break;
                     case "generarTurnos":
                         funcionalidadAgendaCrearTurnos();

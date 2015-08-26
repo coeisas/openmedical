@@ -60,6 +60,7 @@ import org.primefaces.context.RequestContext;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.LazyDataModel;
 import org.primefaces.model.TreeNode;
+import java.util.Calendar;
 
 @ManagedBean(name = "historiasMB")
 @SessionScoped
@@ -98,7 +99,6 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
     CfgEmpresaFacade empresaFacade;
     @EJB
     CfgPacientesFacade pacientesFachada;
-    
 
     //---------------------------------------------------
     //-----------------ENTIDADES ------------------------
@@ -261,20 +261,32 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
             RequestContext.getCurrentInstance().update("IdFormHistorias:IdPanelHistorico");
             return;
         }
+        Calendar aux = null;
         if (filtroFechaInicial != null && filtroFechaFinal != null) {
+            //Las fechas filtro tienen como hora las 0. por esta razon no se incluirian los registros de la fecha final. Se aumenta un dia a la fecha
+            aux = Calendar.getInstance();
+            aux.setTime(filtroFechaFinal);
+//            Se aumenta un dia a la fecha final
+            aux.add(Calendar.DATE, 1);
             usarFiltroFechas = true;
         }
-
+        List<Integer> idCitas = new ArrayList();
         if (validarNoVacio(filtroAutorizacion)) {
+//            se busca los idCita de las citas que se crearon con la autorizacion;
+            idCitas = citasFacade.buscarIdCitasByNumAutorizacion(pacienteSeleccionado, filtroAutorizacion);
             usarFiltroAutorizacion = true;
         }
-        List<HcRegistro> listaRegistrosPaciente;
+        List<HcRegistro> listaRegistrosPaciente = new ArrayList();
         if (usarFiltroFechas && usarFiltroAutorizacion) {//usar dos filtros
-            listaRegistrosPaciente = registroFacade.buscarFiltradoPorNumeroAutorizacionYFecha(pacienteSeleccionado.getIdPaciente(), filtroFechaInicial, filtroFechaFinal, filtroAutorizacion);
+            if (!idCitas.isEmpty()) {
+                listaRegistrosPaciente = registroFacade.buscarFiltradoPorNumeroAutorizacionYFecha(pacienteSeleccionado.getIdPaciente(), filtroFechaInicial, aux.getTime(), idCitas);
+            }
         } else if (usarFiltroFechas) {// usar filtro de fecha
-            listaRegistrosPaciente = registroFacade.buscarOrdenado(pacienteSeleccionado.getIdPaciente(), filtroFechaInicial, filtroFechaFinal);
-        } else if (usarFiltroAutorizacion) {//usar filtro de autorizacion
-            listaRegistrosPaciente = registroFacade.buscarFiltradoPorNumeroAutorizacion(pacienteSeleccionado.getIdPaciente(), filtroAutorizacion);
+            listaRegistrosPaciente = registroFacade.buscarOrdenado(pacienteSeleccionado.getIdPaciente(), filtroFechaInicial, aux.getTime());
+        } else if (usarFiltroAutorizacion) {//usar filtro de autorizacion          
+            if (!idCitas.isEmpty()) {
+                listaRegistrosPaciente = registroFacade.buscarFiltradoPorNumeroAutorizacion(pacienteSeleccionado.getIdPaciente(), idCitas);
+            }
         } else {//no usar filtro, se busca todos
             listaRegistrosPaciente = registroFacade.buscarOrdenadoPorFecha(pacienteSeleccionado.getIdPaciente());// pacienteSeleccionado.getHcRegistroList();//buscar por orden de fecha decendente            
         }
@@ -2314,18 +2326,18 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
         nuevoRegistro.setFechaReg(fechaReg);
         nuevoRegistro.setFechaSis(fechaSis);
         nuevoRegistro.setIdPaciente(pacienteSeleccionado);
-        
+
         if (validarNoVacio(turnoCita)) {
             List<CitCitas> listaCitas = turnosFacade.find(Integer.parseInt(turnoCita)).getCitCitasList();
             CitCitas citaAtendida = null;
             for (CitCitas cita : listaCitas) {
                 if (cita.getCancelada() == false) {
                     nuevoRegistro.setIdCita(cita);
-                    citaAtendida=cita;
+                    citaAtendida = cita;
                     break;
                 }
             }
-            if(citaAtendida!=null){
+            if (citaAtendida != null) {
                 citaAtendida.setAtendida(true);
                 citaAtendida.setTieneRegAsociado(true);
 //                citasFacade.edit(citaAtendida);
@@ -2563,8 +2575,6 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
 //    public void setListaPacientes(List<CfgPacientes> listaPacientes) {
 //        this.listaPacientes = listaPacientes;
 //    }
-    
-
     public CfgPacientes getPacienteSeleccionado() {
         return pacienteSeleccionado;
     }
@@ -2875,6 +2885,6 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
 
     public void setAgendaPrestadorMB(AgendaPrestadorMB agendaPrestadorMB) {
         this.agendaPrestadorMB = agendaPrestadorMB;
-    }    
+    }
 
 }

@@ -47,7 +47,7 @@ public class CitAutorizacionesFacade extends AbstractFacade<CitAutorizaciones> {
         } catch (Exception e) {
             return null;
         }
-    }    
+    }
 
     public CitAutorizaciones findAutorizacionNoCerrada(CfgPacientes paciente, String numAutorizacion) {
         try {
@@ -59,7 +59,7 @@ public class CitAutorizacionesFacade extends AbstractFacade<CitAutorizaciones> {
             return null;
         }
     }
-    
+
     public List<CitAutorizaciones> findAutorizacionesNoCerradas(int offset, int limit) {
         try {
             Query query = getEntityManager().createQuery("SELECT a FROM CitAutorizaciones a WHERE a.cerrada = false ORDER BY a.fechaSistema, a.idAutorizacion");
@@ -78,8 +78,8 @@ public class CitAutorizacionesFacade extends AbstractFacade<CitAutorizaciones> {
         } catch (Exception e) {
             return 0;
         }
-    }    
-    
+    }
+
     public List<CitAutorizaciones> findAutorizacionesNoCerradas(int idPaciente, int offset, int limit) {
         try {
             Query query = getEntityManager().createQuery("SELECT a FROM CitAutorizaciones a WHERE a.paciente.idPaciente = ?1 AND a.cerrada = false");
@@ -91,7 +91,7 @@ public class CitAutorizacionesFacade extends AbstractFacade<CitAutorizaciones> {
             return null;
         }
     }
-    
+
     public int totalAutorizacionesNoCerradasByPaciente(int idPaciente) {
         try {
             Query query = getEntityManager().createQuery("SELECT COUNT(a.idAutorizacion) FROM CitAutorizaciones a WHERE  a.paciente.idPaciente = ?1 AND a.cerrada = false");
@@ -100,8 +100,8 @@ public class CitAutorizacionesFacade extends AbstractFacade<CitAutorizaciones> {
         } catch (Exception e) {
             return 0;
         }
-    }     
-    
+    }
+
     public CitAutorizaciones findAutorizacionDisponible(int idPaciente, int idServicio, int idAdministradora) {
         try {
             Query query = getEntityManager().createQuery("SELECT a FROM CitAutorizaciones a WHERE a.paciente.idPaciente = ?1 AND EXISTS(SELECT sa FROM a.citAutorizacionesServiciosList sa WHERE sa.facServicio.idServicio = ?2 AND (sa.sesionesPendientes > 0 OR sa.sesionesRealizadas < sa.sesionesAutorizadas)) AND a.administradora.idAdministradora = ?3 AND a.cerrada = false");
@@ -153,7 +153,7 @@ public class CitAutorizacionesFacade extends AbstractFacade<CitAutorizaciones> {
                         sql = sql.concat(" WHERE ");
                     }
                     sql = sql.concat(" a.numAutorizacion = ?4 ");
-//                ban = true;
+                    ban = true;
                 }
             }
             sql = sql.concat(" GROUP BY a.administradora, a.paciente, a.idAutorizacion ORDER BY a.administradora, a.paciente, a.idAutorizacion DESC");
