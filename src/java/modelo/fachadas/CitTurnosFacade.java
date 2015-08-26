@@ -376,7 +376,7 @@ public class CitTurnosFacade extends AbstractFacade<CitTurnos> {
 
     public int totalTurnosDisponibles(List<Integer> idTurnos) {
         try {
-            Query query = getEntityManager().createQuery("SELECT COUNT(t.idTurno) FROM CitTurnos t WHERE t.idTurno IN ?1 AND t.estado = 'disponible'");
+            Query query = getEntityManager().createQuery("SELECT COUNT(t.idTurno) FROM CitTurnos t WHERE t.idTurno IN ?1 AND (t.estado = 'disponible' OR t.estado = 'reservado')");
             query.setParameter(1, idTurnos);
             return Integer.parseInt(query.getSingleResult().toString());
         } catch (Exception e) {
