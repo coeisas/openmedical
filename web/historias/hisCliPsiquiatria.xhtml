@@ -312,7 +312,10 @@
                 <tr><td>&nbsp;</td></tr>
                 <tr>
                     <td colspan="2">
-                        <p:outputLabel value="FECHA-HORA REGISTRO"/><p:calendar navigator="true" locale="es" value="#{historiasMB.fechaReg}" pattern="dd/MM/yyyy HH:mm:ss" size="23" mask="true"  />
+                        <p:outputLabel value="FECHA-HORA REGISTRO "/>
+                        <h:outputLabel value="#{historiasMB.fechaReg}">
+                            <f:convertDateTime locale="es" pattern="dd/MM/yyyy HH:mm:ss" timeZone="America/Bogota"/>
+                        </h:outputLabel>
                     </td>
                 </tr>
                 <tr><td>&nbsp;</td></tr>

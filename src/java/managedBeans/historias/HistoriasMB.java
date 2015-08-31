@@ -2436,7 +2436,8 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
             } else {
                 administradoraPaciente = "";
             }
-            tipoRegistroClinico = "";
+//            tipoRegistroClinico = "";
+            tipoRegistroClinico = "3";
             cambiaTipoRegistroClinico();
             if (!cargandoDesdeTab) {
                 RequestContext.getCurrentInstance().execute("PF('dlgSeleccionarPaciente').hide();");
