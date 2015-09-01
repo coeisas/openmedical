@@ -206,6 +206,12 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
             pacienteSeleccionadoTabla = pacienteTmp;
             cargarPaciente();
             turnoCita = citaActual.getIdTurno().getIdTurno().toString();
+            //la fecha de registro correspondera a la de la cita
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(citaActual.getIdTurno().getFecha());
+            calendar.add(Calendar.HOUR, citaActual.getIdTurno().getHoraIni().getHours());
+            calendar.add(Calendar.MINUTE, citaActual.getIdTurno().getHoraIni().getMinutes());
+            fechaReg = calendar.getTime();
         }
         RequestContext.getCurrentInstance().update("IdMensajeFacturacion");
         cargandoDesdeTab = false;
