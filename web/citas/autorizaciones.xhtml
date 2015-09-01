@@ -147,6 +147,9 @@
                     <p:column headerText="Servicios Autorizados">
                         <h:outputText value="#{autorizacion.citAutorizacionesServiciosList.size()}" />
                     </p:column>
+                    <p:column headerText="Administradora">
+                        <h:outputText value="#{autorizacion.administradora.razonSocial}"/>
+                    </p:column>
                 </p:dataTable> 
                 <br/>
                 <p:commandButton value="Cargar Autorizacion" actionListener="#{autorizacionMB.cargarAutorizacion}" oncomplete="PF('dlgAutorizaciones').hide()"/>
