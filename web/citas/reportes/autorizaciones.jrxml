@@ -18,9 +18,9 @@
 	<group name="administradora">
 		<groupExpression><![CDATA[$F{administradora}]]></groupExpression>
 		<groupHeader>
-			<band height="20">
+			<band height="24">
 				<textField>
-					<reportElement x="0" y="0" width="572" height="20" uuid="c9eb8c09-460f-4921-9d92-30a90dff4fcc"/>
+					<reportElement x="0" y="0" width="572" height="24" uuid="c9eb8c09-460f-4921-9d92-30a90dff4fcc"/>
 					<textElement verticalAlignment="Middle">
 						<font size="16" isBold="true"/>
 					</textElement>
