@@ -93,7 +93,7 @@ public class CitTurnosFacade extends AbstractFacade<CitTurnos> {
         try {
             String aux = " order by fecha, hora_ini LIMIT " + limit + " OFFSET " + offset;
             consulta = consulta.concat(aux);
-            System.out.println(consulta);
+//            System.out.println(consulta);
             Query query = getEntityManager().createNativeQuery(consulta, CitTurnos.class);
             
 //            query.setFirstResult(offset);
@@ -107,7 +107,7 @@ public class CitTurnosFacade extends AbstractFacade<CitTurnos> {
     public int totalTurnosByPrestadoresLazyNative(String consulta) {
         try {
             Query query = getEntityManager().createNativeQuery(consulta);
-            System.out.println(consulta);
+//            System.out.println(consulta);
             return Integer.parseInt(query.getSingleResult().toString());
         } catch (Exception e) {
             return 0;
