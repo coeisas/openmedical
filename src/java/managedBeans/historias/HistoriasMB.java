@@ -168,6 +168,8 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
     private boolean cargandoDesdeTab = false;
     private CitCitas citaActual = null;
 
+    private boolean posibleModificarFecha;
+
     //---------------------------------------------------
     //----------------- FUNCIONES INICIALES -----------------------
     //---------------------------------------------------
@@ -176,12 +178,22 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
 
     @PostConstruct
     public void inicializar() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        loginMB = context.getApplication().evaluateExpressionGet(context, "#{loginMB}", LoginMB.class);
+        CfgUsuarios user = loginMB.getUsuarioActual();
+        posibleModificarFecha = false;
+        if (user != null) {
+            if (user.getIdPerfil() != null) {
+                posibleModificarFecha = user.getIdPerfil().getIdPerfil() == 1;
+            }
+        }
         recargarMaestrosTxtPredefinidos();
         //listaPacientes = pacientesFacade.buscarOrdenado();
         //listaPacientesFiltered= pacientesFacade.buscarOrdenado();
         listaPacientes = new LazyPacienteDataModel(pacientesFachada);
         listaTipoRegistroClinico = tipoRegCliFacade.buscarTiposRegstroActivos();
         listaPrestadores = usuariosFacade.buscarUsuariosParaHistorias();
+
         seleccionaTodosRegCliHis();
         empresa = empresaFacade.findAll().get(0);
     }
@@ -206,12 +218,14 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
             pacienteSeleccionadoTabla = pacienteTmp;
             cargarPaciente();
             turnoCita = citaActual.getIdTurno().getIdTurno().toString();
-            //la fecha de registro correspondera a la de la cita
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(citaActual.getIdTurno().getFecha());
-            calendar.add(Calendar.HOUR, citaActual.getIdTurno().getHoraIni().getHours());
-            calendar.add(Calendar.MINUTE, citaActual.getIdTurno().getHoraIni().getMinutes());
-            fechaReg = calendar.getTime();
+//--------------la fecha de registro correspondera a la de la cita
+//            Calendar calendar = Calendar.getInstance();
+//            calendar.setTime(citaActual.getIdTurno().getFecha());
+//            calendar.add(Calendar.HOUR, citaActual.getIdTurno().getHoraIni().getHours());
+//            calendar.add(Calendar.MINUTE, citaActual.getIdTurno().getHoraIni().getMinutes());
+//            fechaReg = calendar.getTime();
+//------------la fecha de registro correspondera a la del sistema
+            fechaReg = new Date();
         }
         RequestContext.getCurrentInstance().update("IdMensajeFacturacion");
         cargandoDesdeTab = false;
@@ -2189,7 +2203,7 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
         estructuraCampos.limpiar();
         idPrestador = null;
         especialidadPrestador = null;
-        fechaReg = new Date();
+            fechaReg = new Date();
         fechaSis = new Date();
         //seleccionar medico de ser posible
         if (loginMB.getUsuarioActual().getTipoUsuario().getCodigo().equals("2")) {//es un prestador
@@ -2892,6 +2906,10 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
 
     public void setAgendaPrestadorMB(AgendaPrestadorMB agendaPrestadorMB) {
         this.agendaPrestadorMB = agendaPrestadorMB;
+    }
+
+    public boolean isPosibleModificarFecha() {
+        return posibleModificarFecha;
     }
 
 }
