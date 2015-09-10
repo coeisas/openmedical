@@ -219,13 +219,13 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
             cargarPaciente();
             turnoCita = citaActual.getIdTurno().getIdTurno().toString();
 //--------------la fecha de registro correspondera a la de la cita
-//            Calendar calendar = Calendar.getInstance();
-//            calendar.setTime(citaActual.getIdTurno().getFecha());
-//            calendar.add(Calendar.HOUR, citaActual.getIdTurno().getHoraIni().getHours());
-//            calendar.add(Calendar.MINUTE, citaActual.getIdTurno().getHoraIni().getMinutes());
-//            fechaReg = calendar.getTime();
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(citaActual.getIdTurno().getFecha());
+            calendar.add(Calendar.HOUR, citaActual.getIdTurno().getHoraIni().getHours());
+            calendar.add(Calendar.MINUTE, citaActual.getIdTurno().getHoraIni().getMinutes());
+            fechaReg = calendar.getTime();
 //------------la fecha de registro correspondera a la del sistema
-            fechaReg = new Date();
+//            fechaReg = new Date();
         }
         RequestContext.getCurrentInstance().update("IdMensajeFacturacion");
         cargandoDesdeTab = false;
@@ -2203,7 +2203,15 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
         estructuraCampos.limpiar();
         idPrestador = null;
         especialidadPrestador = null;
+        if (citaActual != null) {//------la fecha de registro correspondera a la de la cita
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(citaActual.getIdTurno().getFecha());
+            calendar.add(Calendar.HOUR, citaActual.getIdTurno().getHoraIni().getHours());
+            calendar.add(Calendar.MINUTE, citaActual.getIdTurno().getHoraIni().getMinutes());
+            fechaReg = calendar.getTime();
+        } else {//------la fecha de registro correspondera a la del sistema        
             fechaReg = new Date();
+        }
         fechaSis = new Date();
         //seleccionar medico de ser posible
         if (loginMB.getUsuarioActual().getTipoUsuario().getCodigo().equals("2")) {//es un prestador
@@ -2429,6 +2437,11 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
         if (pacienteSeleccionadoTabla != null) {
             turnoCita = "";
             pacienteSeleccionado = pacientesFacade.find(pacienteSeleccionadoTabla.getIdPaciente());
+            if (citaActual != null) {//si hay una citaActual y se carga un paciente. Se valida que el paciente de la cita coincida con el seleccionado
+                if (!pacienteSeleccionado.equals(citaActual.getIdPaciente())) {
+                    citaActual = null;
+                }
+            }
             urlPagina = "";
             identificacionPaciente = "";
             nombrePaciente = "Paciente";
