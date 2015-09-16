@@ -184,7 +184,7 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
         posibleModificarFecha = false;
         if (user != null) {
             if (user.getIdPerfil() != null) {
-                posibleModificarFecha = user.getIdPerfil().getIdPerfil() == 1;
+                posibleModificarFecha = user.getIdPerfil().getIdPerfil() == 2;
             }
         }
         recargarMaestrosTxtPredefinidos();
