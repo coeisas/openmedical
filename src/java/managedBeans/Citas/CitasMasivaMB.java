@@ -550,7 +550,7 @@ public class CitasMasivaMB extends MetodosGenerales implements Serializable {
                 //listaTurnos = new LazyTurnosDataModel(turnosFacade, idsprestadores, horaIni, horaFin, getDiassemana());
 
                 //turnos importando la sede por la cual se inicio sesion
-                listaTurnos = new LazyTurnosDataModel(turnosFacade, idsprestadores, horaIni, horaFin, getDiassemana(), idConsultorios);
+                listaTurnos = new LazyTurnosDataModel(turnosFacade, idsprestadores, horaIni, horaFin, getDiassemana(), idConsultorios, null);
 
                 setListaTurnos(listaTurnos);
             } else {

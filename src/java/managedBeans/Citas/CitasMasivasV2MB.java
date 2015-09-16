@@ -81,11 +81,14 @@ public class CitasMasivasV2MB extends MetodosGenerales implements Serializable {
     private List diassemana;
     private Date horaIni;
     private Date horaFin;
+    private Date fechaFiltro;
     private boolean diferenteServicio = false;
     CitTurnos turnoSeleccionado = null;//turno que se selecciona en la tabla turnos cuando el servicio cambia entre turnos 
 
     //listado de especialidades de los prestadores actuales
     private List<SelectItem> listaEspecialidades;
+    private List<CfgUsuarios> listaPrestadores;
+    private List<CfgUsuarios> listaPrestadoresSeleccionados;
     private CfgUsuarios prestadorSeleccionado;
 
     //private List<CitTurnos> listaTurnos;
@@ -173,6 +176,8 @@ public class CitasMasivasV2MB extends MetodosGenerales implements Serializable {
         listaControlSesionesAutorizadas = new ArrayList();
         listaTurnoServicio = new ArrayList();
         idsprestadores = new ArrayList();
+//        setListaPrestadoresSeleccionados((List<CfgUsuarios>) new ArrayList());
+//        listaPrestadores = usuariosFachada.findPrestadores();
     }
 
     //-----------------------------------------------------------------------------------
@@ -261,6 +266,33 @@ public class CitasMasivasV2MB extends MetodosGenerales implements Serializable {
 
     public void abrirTabAutorizaciones() {
         RequestContext.getCurrentInstance().execute("window.parent.cargarTab('Autorizaciones','citas/autorizaciones.xhtml','idPaciente;" + pacienteSeleccionado.getIdPaciente().toString() + ";idServicio;" + String.valueOf(idServicio) + "')");
+    }
+
+    public void onRowSelectPrestador(SelectEvent event) {
+        CfgUsuarios prestador = (CfgUsuarios) event.getObject();
+        for (CfgUsuarios doctor : listaPrestadoresSeleccionados) {
+            if (prestador.equals(doctor)) {
+                imprimirMensaje("Correcto", prestador.nombreCompleto(), null);
+                break;
+            }
+        }
+        listaPrestadoresSeleccionados.add(prestador);
+        System.out.println("insertando " + prestador.nombreCompleto());
+        idsprestadores.add(prestador.getIdUsuario());
+        setRenderizarListaTurnos(true);
+        System.out.println(idsprestadores.size());
+        loadTurnos();
+        RequestContext.getCurrentInstance().update("tabprincipal:formprestadores");
+    }
+
+    public void onRowUnselectPrestador(UnselectEvent event) {
+        CfgUsuarios prestador = (CfgUsuarios) event.getObject();
+        System.out.println("quitando " + prestador.nombreCompleto());
+        idsprestadores.remove(prestador.getIdUsuario());
+        setRenderizarListaTurnos(true);
+        System.out.println(idsprestadores.size());
+        loadTurnos();
+        RequestContext.getCurrentInstance().update("tabprincipal:formprestadores");
     }
 
     //----------------------------------------------------------------------------------
@@ -837,15 +869,21 @@ public class CitasMasivasV2MB extends MetodosGenerales implements Serializable {
     //-------------------------------------------------------------------
     //----------------------TURNOS DE CITA-------------------------------
     //-------------------------------------------------------------------
+    public void accionFiltrar() {
+//        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Cargando", "Cargando turnos " + fechaFiltro));
+        loadTurnos();
+    }
+
     public void loadTurnos() {
         //List<Integer> idsprestadores = selectionViewMB.getIdsprestadores();
+
         if (getIdsprestadores() != null) {
             if (getIdsprestadores().size() > 0) {
 
                 //lista de turnos sin importar la sede
                 //listaTurnos = new LazyTurnosDataModel(turnosFacade, idsprestadores, horaIni, horaFin, getDiassemana());
                 //turnos importando la sede por la cual se inicio sesion
-                listaTurnos = new LazyTurnosDataModel(turnosFacade, idsprestadores, horaIni, horaFin, getDiassemana(), idConsultorios);
+                listaTurnos = new LazyTurnosDataModel(turnosFacade, idsprestadores, horaIni, horaFin, getDiassemana(), idConsultorios, fechaFiltro);
 
                 setListaTurnos(listaTurnos);
             } else {
@@ -1257,6 +1295,26 @@ public class CitasMasivasV2MB extends MetodosGenerales implements Serializable {
      */
     public void setRendBtnAutorizacion(boolean rendBtnAutorizacion) {
         this.rendBtnAutorizacion = rendBtnAutorizacion;
+    }
+
+    public Date getFechaFiltro() {
+        return fechaFiltro;
+    }
+
+    public void setFechaFiltro(Date fechaFiltro) {
+        this.fechaFiltro = fechaFiltro;
+    }
+
+    public List<CfgUsuarios> getListaPrestadores() {
+        return listaPrestadores;
+    }
+
+    public List<CfgUsuarios> getListaPrestadoresSeleccionados() {
+        return listaPrestadoresSeleccionados;
+    }
+
+    public void setListaPrestadoresSeleccionados(List<CfgUsuarios> listaPrestadoresSeleccionados) {
+        this.listaPrestadoresSeleccionados = listaPrestadoresSeleccionados;
     }
 
 }

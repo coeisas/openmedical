@@ -101,7 +101,7 @@ public class CfgUsuariosFacade extends AbstractFacade<CfgUsuarios> {
 
     public List<CfgUsuarios> findPrestadores() {
         try {
-            Query query = getEntityManager().createQuery("SELECT p FROM CfgUsuarios p WHERE p.tipoUsuario.codigo = 2 AND p.visible = true");
+            Query query = getEntityManager().createQuery("SELECT p FROM CfgUsuarios p WHERE p.tipoUsuario.codigo = '2' AND p.visible = true");
             return query.getResultList();
         } catch (Exception e) {
             return null;
