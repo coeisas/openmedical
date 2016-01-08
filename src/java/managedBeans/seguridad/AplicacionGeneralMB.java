@@ -38,6 +38,7 @@ import modelo.entidades.CfgConfiguraciones;
 import modelo.entidades.CfgInsumo;
 import modelo.entidades.CfgMedicamento;
 import modelo.entidades.CfgPerfilesUsuario;
+import modelo.entidades.CfgPropositoConsulta;
 import modelo.entidades.CfgSede;
 import modelo.entidades.HcTipoReg;
 import modelo.entidades.CfgUsuarios;
@@ -49,6 +50,7 @@ import modelo.fachadas.CfgCopiasSeguridadFacade;
 import modelo.fachadas.CfgInsumoFacade;
 import modelo.fachadas.CfgMedicamentoFacade;
 import modelo.fachadas.CfgPerfilesUsuarioFacade;
+import modelo.fachadas.CfgPropositoConsultaFacade;
 import modelo.fachadas.CfgSedeFacade;
 import modelo.fachadas.HcTipoRegFacade;
 import modelo.fachadas.CfgUsuariosFacade;
@@ -91,6 +93,9 @@ public class AplicacionGeneralMB {
     CfgConfiguracionesFacade configuracionesFacade;
     @EJB
     CfgCopiasSeguridadFacade copiasSeguridadFacade;
+    @EJB
+    CfgPropositoConsultaFacade propositoConsultaFacade;
+    
 
     //---------------------------------------------------
     //-----------------ENTIDADES ------------------------
@@ -144,6 +149,7 @@ public class AplicacionGeneralMB {
     private List<SelectItem> listaCategoriaPaciente;
     private List<FacAdministradora> listaAdministradoras;
     private List<SelectItem> listaTipoAdministradora;
+    private List<CfgPropositoConsulta> listaPropositoConsulta;
 
     //---------------------------------------------------
     //-----------------VARIABLES -------------------------
@@ -370,6 +376,7 @@ public class AplicacionGeneralMB {
             cargarClasificacion(ClasificacionesEnum.TipoUsuario);
             cargarClasificacion(ClasificacionesEnum.Usuarios);
             cargarClasificacion(ClasificacionesEnum.Zona);
+            cargarClasificacion(ClasificacionesEnum.PropositoConsulta);
         }
     }
 
@@ -519,6 +526,9 @@ public class AplicacionGeneralMB {
                 break;
             case Zona:
                 listaZona = cargarClasificacion(maestro.toString());
+                break;
+            case PropositoConsulta:
+                listaPropositoConsulta = propositoConsultaFacade.buscarPropositos();
                 break;
         }
     }
@@ -1001,6 +1011,10 @@ public class AplicacionGeneralMB {
 
     public void setListaMunicipios(List<SelectItem> listaMunicipios) {
         this.listaMunicipios = listaMunicipios;
+    }
+
+    public List<CfgPropositoConsulta> getListaPropositoConsulta() {
+        return listaPropositoConsulta;
     }
 
 }

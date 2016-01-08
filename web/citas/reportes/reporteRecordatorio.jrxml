@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="612" pageHeight="792" columnWidth="572" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c7fe9092-f8bb-4559-add8-2a2beb95c72a">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="163"/>
+	<property name="ireport.x" value="121"/>
 	<property name="ireport.y" value="0"/>
 	<parameter name="paciente" class="java.lang.String"/>
 	<parameter name="administradora" class="java.lang.String"/>
@@ -97,21 +97,21 @@
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Hora]]></text>
+				<text><![CDATA[HORA]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="198" y="12" width="185" height="15" uuid="6d503608-1cb8-439b-b25b-89bc3d17cd57"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Prestador]]></text>
+				<text><![CDATA[DR(A)]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="388" y="12" width="185" height="15" uuid="ff5c338e-7ffc-4172-9c51-120b0b5e0743"/>
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Servicio]]></text>
+				<text><![CDATA[SERVICIO]]></text>
 			</staticText>
 			<line>
 				<reportElement x="0" y="26" width="572" height="1" uuid="e412fea2-a345-4af0-b7f0-88b554b8f2a2"/>
@@ -121,7 +121,7 @@
 				<textElement verticalAlignment="Middle">
 					<font size="10" isBold="true"/>
 				</textElement>
-				<text><![CDATA[Fecha]]></text>
+				<text><![CDATA[FECHA]]></text>
 			</staticText>
 		</band>
 	</columnHeader>

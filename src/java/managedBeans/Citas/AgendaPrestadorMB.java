@@ -9,8 +9,8 @@ import beans.utilidades.LazyAgendaModel;
 import beans.utilidades.MetodosGenerales;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -19,14 +19,18 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import managedBeans.seguridad.LoginMB;
+import modelo.entidades.CfgPropositoConsulta;
 import modelo.entidades.CfgUsuarios;
 import modelo.entidades.CitAutorizaciones;
 import modelo.entidades.CitAutorizacionesServicios;
 import modelo.entidades.CitCitas;
+import modelo.entidades.CitPropositoConsulta;
 import modelo.entidades.CitTurnos;
+import modelo.fachadas.CfgPropositoConsultaFacade;
 import modelo.fachadas.CitAutorizacionesFacade;
 import modelo.fachadas.CitAutorizacionesServiciosFacade;
 import modelo.fachadas.CitCitasFacade;
+import modelo.fachadas.CitPropositoConsultaFacade;
 import modelo.fachadas.CitTurnosFacade;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
@@ -57,6 +61,9 @@ public class AgendaPrestadorMB extends MetodosGenerales implements Serializable 
     private String minTime;
     private String maxTime;
 
+    private List<CfgPropositoConsulta> listaPropositoConsultas;
+    private String observacion;
+
     private CfgUsuarios prestadorActual;
     private CitCitas citCita;
     private CitTurnos citTurnos;
@@ -71,6 +78,12 @@ public class AgendaPrestadorMB extends MetodosGenerales implements Serializable 
 
     @EJB
     CitAutorizacionesServiciosFacade autorizacionesServiciosFacade;
+
+    @EJB
+    CfgPropositoConsultaFacade cfgPropositoConsultaFacade;
+
+    @EJB
+    CitPropositoConsultaFacade citPropositoConsultaFacade;
 
     @ManagedProperty(value = "#{loginMB}")
     private LoginMB loginMB;
@@ -153,13 +166,36 @@ public class AgendaPrestadorMB extends MetodosGenerales implements Serializable 
         if (event.getTitle() != null) {
             String[] vector = event.getTitle().split(" - ");
             idTurno = vector[0];
+            observacion = null;
+            listaPropositoConsultas = cfgPropositoConsultaFacade.buscarPropositos();
             seleccionarCita(Long.parseLong(idTurno));
             if (citCita != null) {
+                observacion = citCita.getObservacion();
+                List<CitPropositoConsulta> aux = citPropositoConsultaFacade.propositoConsultaByCita(citCita);
+                if (aux != null && !aux.isEmpty()) {
+                    for (CitPropositoConsulta propositoConsulta : aux) {
+                        cargarPropositoConsultaToCita(propositoConsulta);
+                    }
+                }                
                 RequestContext.getCurrentInstance().execute("PF('eventDialog').show()");
             }
         }
     }
 
+    private void cargarPropositoConsultaToCita(CitPropositoConsulta citPpropositoConsulta) {
+        int indx = 0;
+        for (CfgPropositoConsulta cfgProposito : listaPropositoConsultas) {
+            if (cfgProposito.getIdProposito().equals(citPpropositoConsulta.getCfgPropositoConsulta().getIdProposito())) {
+                break;
+            }
+            indx++;
+        }
+        listaPropositoConsultas.get(indx).setValor(citPpropositoConsulta.getValorCampo());
+    }
+
+    public void selectProposito() {
+    }
+    
     private void seleccionarCita(long id) {
         CitCitas cita = citasFacade.findCitasByTurno(id);
         setCitCita(cita);
@@ -353,6 +389,14 @@ public class AgendaPrestadorMB extends MetodosGenerales implements Serializable 
 
     public String getIdTurno() {
         return idTurno;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public List<CfgPropositoConsulta> getListaPropositoConsultas() {
+        return listaPropositoConsultas;
     }
 
 }

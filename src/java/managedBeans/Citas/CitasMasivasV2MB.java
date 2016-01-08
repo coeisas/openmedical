@@ -45,6 +45,7 @@ import modelo.fachadas.CitAutorizacionesServiciosFacade;
 import modelo.fachadas.CitCitasFacade;
 import modelo.fachadas.CitTurnosFacade;
 import modelo.fachadas.FacServicioFacade;
+import modelo.fachadas.HcDetalleFacade;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.event.NodeUnselectEvent;
@@ -150,6 +151,9 @@ public class CitasMasivasV2MB extends MetodosGenerales implements Serializable {
 
     @EJB
     CfgConsultoriosFacade consultoriosFacade;
+
+    @EJB
+    HcDetalleFacade hcDetalleFacade;
 
     public CitasMasivasV2MB() {
     }
@@ -893,6 +897,19 @@ public class CitasMasivasV2MB extends MetodosGenerales implements Serializable {
             setListaTurnos(null);
         }
         RequestContext.getCurrentInstance().update("tabprincipal:formturnos");
+    }
+
+    public String nombrePaciente(CitTurnos turno) {
+        String nombre = null;
+        CitCitas citaAux = citasFacade.findCitasByTurno(turno.getIdTurno());
+        if (citaAux != null) {
+            nombre = citaAux.getIdPaciente().nombreCompleto();
+            String dx = hcDetalleFacade.ultimoDxHC(citaAux.getIdPaciente().getIdPaciente());
+            if (dx != null) {
+                nombre = nombre.concat(" CIE10: " + dx);
+            }
+        }
+        return nombre;
     }
 
     boolean diadisponible(int dia) {

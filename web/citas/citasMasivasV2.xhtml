@@ -217,6 +217,7 @@
                             value="#{citasMasivasV2MB.listaTurnos}" 
                             rowKey="#{turno.idTurno}"
                             selection="#{citasMasivasV2MB.listaTurnosSeleccionado}"
+                            disabledSelection="#{turno.estado eq 'disponible' ? false : true}"
                             rows="10"
                             paginator="true"
                             paginatorPosition="bottom"
@@ -258,7 +259,7 @@
                             <p:column headerText="Prestador">
                                 <h:outputText value="#{turno.idPrestador.nombreCompleto()}"/>                    
                             </p:column>
-                            <p:column headerText="Especialidad" style="width: 30%">
+                            <p:column headerText="Paciente" style="width: 30%">
                                 <!--p:column headerText="Especialidad" filterBy="# {turno.idPrestador.especialidad.id}" filterMatchMode="exact" style="width: 30%">
                                     <f:facet name="filter">
                                         <p:selectOneMenu onchange="PF('turnoTable').filter()" style="width: 99%">
@@ -266,8 +267,8 @@
                                             <f:selectItems  value="# {citasMasivasV2MB.listaEspecialidades}" />
                                         </p:selectOneMenu>
                                     </f:facet-->                               
-                                <h:outputText value="#{turno.idPrestador.especialidad.descripcion}"/>
-                            </p:column>
+                                <h:outputText value="#{citasMasivasV2MB.nombrePaciente(turno)}"/>
+                            </p:column>                         
                         </p:dataTable> 
                     </div>
                 </h:form>

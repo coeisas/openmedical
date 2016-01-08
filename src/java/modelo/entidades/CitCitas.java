@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -42,7 +43,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "CitCitas.findByFechaRegistro", query = "SELECT c FROM CitCitas c WHERE c.fechaRegistro = :fechaRegistro"),
     @NamedQuery(name = "CitCitas.findByFechaCancelacion", query = "SELECT c FROM CitCitas c WHERE c.fechaCancelacion = :fechaCancelacion"),
     @NamedQuery(name = "CitCitas.findByFacturada", query = "SELECT c FROM CitCitas c WHERE c.facturada = :facturada"),
-    @NamedQuery(name = "CitCitas.findByNoPaqAplicado", query = "SELECT c FROM CitCitas c WHERE c.noPaqAplicado = :noPaqAplicado")})
+    @NamedQuery(name = "CitCitas.findByNoPaqAplicado", query = "SELECT c FROM CitCitas c WHERE c.noPaqAplicado = :noPaqAplicado"),
+    @NamedQuery(name = "CitCitas.findByObservacion", query = "SELECT c FROM CitCitas c WHERE c.observacion = :observacion")})
 public class CitCitas implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
@@ -101,7 +103,11 @@ public class CitCitas implements Serializable {
     private List<FacFacturaPaciente> facFacturaPacienteList;
     @Column(name = "tiene_reg_asociado")
     private Boolean tieneRegAsociado;
-    
+    @Column(name = "observacion", length = 2147483647)
+    private String observacion;    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "citCitas")
+    private List<CitPropositoConsulta> citPropositoConsultaList;
+        
     public CitCitas() {
     }
 
@@ -278,6 +284,23 @@ public class CitCitas implements Serializable {
     public void setFacFacturaPacienteList(List<FacFacturaPaciente> facFacturaPacienteList) {
         this.facFacturaPacienteList = facFacturaPacienteList;
     }
+    
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
+    }    
+    
+    @XmlTransient
+    public List<CitPropositoConsulta> getCitPropositoConsultaList() {
+        return citPropositoConsultaList;
+    }
+
+    public void setCitPropositoConsultaList(List<CitPropositoConsulta> citPropositoConsultaList) {
+        this.citPropositoConsultaList = citPropositoConsultaList;
+    }    
 
     @Override
     public int hashCode() {

@@ -7,11 +7,9 @@ package managedBeans.Citas;
 
 import beans.utilidades.LazyAgendaModel;
 import beans.utilidades.LazyPacienteDataModel;
-import beans.utilidades.LazyPrestadorDataModel;
 import beans.utilidades.MetodosGenerales;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -27,11 +25,12 @@ import javax.faces.model.SelectItem;
 import managedBeans.seguridad.LoginMB;
 import modelo.entidades.CfgClasificaciones;
 import modelo.entidades.CfgPacientes;
-import modelo.entidades.CfgUsuarios;
+import modelo.entidades.CfgPropositoConsulta;
 import modelo.entidades.CitAutorizaciones;
 import modelo.entidades.CitAutorizacionesServicios;
 import modelo.entidades.CitAutorizacionesServiciosPK;
 import modelo.entidades.CitCitas;
+import modelo.entidades.CitPropositoConsulta;
 import modelo.entidades.CitTurnos;
 import modelo.entidades.FacAdministradora;
 import modelo.entidades.FacConsumoServicio;
@@ -40,10 +39,12 @@ import modelo.entidades.FacManualTarifario;
 import modelo.entidades.FacManualTarifarioServicio;
 import modelo.fachadas.CfgClasificacionesFacade;
 import modelo.fachadas.CfgPacientesFacade;
+import modelo.fachadas.CfgPropositoConsultaFacade;
 import modelo.fachadas.CfgUsuariosFacade;
 import modelo.fachadas.CitAutorizacionesFacade;
 import modelo.fachadas.CitAutorizacionesServiciosFacade;
 import modelo.fachadas.CitCitasFacade;
+import modelo.fachadas.CitPropositoConsultaFacade;
 import modelo.fachadas.CitTurnosFacade;
 import modelo.fachadas.FacAdministradoraFacade;
 import modelo.fachadas.FacConsumoServicioFacade;
@@ -91,6 +92,9 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
     private CitCitas citCita;
     private CitTurnos citTurnos;
 
+    private List<CfgPropositoConsulta> listaPropositoConsultas;
+    private String observacion;
+
     private int motivoCancelacion;
     private String descripcionCancelacion;
 
@@ -123,6 +127,12 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
 
     @EJB
     CitAutorizacionesServiciosFacade autorizacionesServiciosFacade;
+
+    @EJB
+    CfgPropositoConsultaFacade cfgPropositoConsultaFacade;
+
+    @EJB
+    CitPropositoConsultaFacade citPropositoConsultaFacade;
 
     @PostConstruct
     private void inicialize() {
@@ -159,7 +169,6 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
 //            }
 //        }
 //    }
-
     public void functionDisplay() {
         if (pacienteActual != null) {
             setDisplay("block");
@@ -237,13 +246,36 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
         if (event.getTitle() != null) {
             String[] vector = event.getTitle().split(" - ");
             idTurno = vector[0];
+            observacion = null;
+            listaPropositoConsultas = cfgPropositoConsultaFacade.buscarPropositos();
             seleccionarCita(Long.parseLong(idTurno));
             if (citCita != null) {
+                observacion = citCita.getObservacion();
+                List<CitPropositoConsulta> aux = citPropositoConsultaFacade.propositoConsultaByCita(citCita);
+                if (aux != null && !aux.isEmpty()) {
+                    for (CitPropositoConsulta propositoConsulta : aux) {
+                        cargarPropositoConsultaToCita(propositoConsulta);
+                    }
+                }
                 RequestContext context = RequestContext.getCurrentInstance();
                 context.update("formRecepcion:pdialog");
                 context.execute("PF('eventDialog').show()");
             }
         }
+    }
+
+    private void cargarPropositoConsultaToCita(CitPropositoConsulta citPpropositoConsulta) {
+        int indx = 0;
+        for (CfgPropositoConsulta cfgProposito : listaPropositoConsultas) {
+            if (cfgProposito.getIdProposito().equals(citPpropositoConsulta.getCfgPropositoConsulta().getIdProposito())) {
+                break;
+            }
+            indx++;
+        }
+        listaPropositoConsultas.get(indx).setValor(citPpropositoConsulta.getValorCampo());
+    }
+
+    public void selectProposito() {
     }
 
     private void seleccionarCita(long id) {
@@ -402,28 +434,45 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
         autorizacion.setPaciente(citCita.getIdPaciente());
         autorizacion.setAdministradora(citCita.getIdAdministradora());
         autorizacion.setNumAutorizacion(numAutorizacion);
-        LoginMB loginMB = FacesContext.getCurrentInstance().getApplication().evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{loginMB}", LoginMB.class);
+        LoginMB loginMB = FacesContext.getCurrentInstance().getApplication().evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{loginMB}", LoginMB.class
+        );
         autorizacion.setIdUsuarioCreador(loginMB.getUsuarioActual());
-        autorizacion.setCerrada(false);
+        autorizacion.setCerrada(
+                false);
         autorizacionesFacade.create(autorizacion);
         CitAutorizacionesServicios autorizacionServicio = new CitAutorizacionesServicios();
+
         autorizacionServicio.setFacServicio(citCita.getIdServicio());
         autorizacionServicio.setSesionesAutorizadas(getSesionesAutorizadas());
-        autorizacionServicio.setSesionesRealizadas(0);
+        autorizacionServicio.setSesionesRealizadas(
+                0);
         autorizacionServicio.setSesionesPendientes(getSesionesAutorizadas() - 1);
         autorizacionServicio.setCitAutorizaciones(autorizacion);
-        autorizacionServicio.setCitAutorizacionesServiciosPK(new CitAutorizacionesServiciosPK(autorizacion.getIdAutorizacion(), citCita.getIdServicio().getIdServicio()));
+
+        autorizacionServicio.setCitAutorizacionesServiciosPK(
+                new CitAutorizacionesServiciosPK(autorizacion.getIdAutorizacion(), citCita.getIdServicio().getIdServicio()));
         autorizacionesServiciosFacade.create(autorizacionServicio);
+
         citCita.setIdAutorizacion(autorizacion);
+
         citasFacade.edit(citCita);
-        setRendBtnAutorizar(false);
-        setRendBtnParticular(false);
-        setRendBtnCancelar(true);
-        setRendBtnEnEspera(true);
-        setNumAutorizacion(null);
-        setSesionesAutorizadas(1);
-        RequestContext.getCurrentInstance().update("formRecepcion:eventDetails");
-        imprimirMensaje("Información", "Autorizacion creada correctamente", FacesMessage.SEVERITY_INFO);
+
+        setRendBtnAutorizar(
+                false);
+        setRendBtnParticular(
+                false);
+        setRendBtnCancelar(
+                true);
+        setRendBtnEnEspera(
+                true);
+        setNumAutorizacion(
+                null);
+        setSesionesAutorizadas(
+                1);
+        RequestContext.getCurrentInstance()
+                .update("formRecepcion:eventDetails");
+        imprimirMensaje(
+                "Información", "Autorizacion creada correctamente", FacesMessage.SEVERITY_INFO);
     }
 
     public void citaEnEspera() {
@@ -699,6 +748,14 @@ public class AgendaRecepcionMB extends MetodosGenerales implements Serializable 
 
     public void setListaPaciente(LazyDataModel<CfgPacientes> listaPaciente) {
         this.listaPaciente = listaPaciente;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public List<CfgPropositoConsulta> getListaPropositoConsultas() {
+        return listaPropositoConsultas;
     }
 
 }

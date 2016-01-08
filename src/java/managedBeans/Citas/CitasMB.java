@@ -33,17 +33,21 @@ import beans.utilidades.MetodosGenerales;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import managedBeans.seguridad.LoginMB;
+import modelo.entidades.CfgPropositoConsulta;
 import modelo.entidades.CitAutorizacionesServicios;
 import modelo.entidades.CitAutorizacionesServiciosPK;
+import modelo.entidades.CitPropositoConsulta;
+import modelo.entidades.CitPropositoConsultaPK;
 import modelo.entidades.FacServicio;
 import modelo.fachadas.CfgPacientesFacade;
+import modelo.fachadas.CfgPropositoConsultaFacade;
 import modelo.fachadas.CfgUsuariosFacade;
 import modelo.fachadas.CitAutorizacionesServiciosFacade;
+import modelo.fachadas.CitPropositoConsultaFacade;
 import modelo.fachadas.FacServicioFacade;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.model.DefaultScheduleEvent;
@@ -70,6 +74,9 @@ public class CitasMB extends MetodosGenerales implements Serializable {
     private List<SelectItem> listaServicios;
     private LazyDataModel<CfgPacientes> listaPacientes;
     private String idTurno;
+
+    private List<CfgPropositoConsulta> listaPropositoConsultas;
+    private String observacion;
 
     //informacion prestador
     private CfgUsuarios prestadorSeleccionado;
@@ -139,6 +146,12 @@ public class CitasMB extends MetodosGenerales implements Serializable {
     @EJB
     CfgUsuariosFacade usuariosFachada;
 
+    @EJB
+    CfgPropositoConsultaFacade cfgPropositoConsultaFacade;
+
+    @EJB
+    CitPropositoConsultaFacade citPropositoConsultaFacade;
+
     public CitasMB() {
     }
 
@@ -155,6 +168,7 @@ public class CitasMB extends MetodosGenerales implements Serializable {
         //setListaPrestadores(prestadoresFachada.findAll());
         cargarEspecialidadesPrestadores();
         LoginMB loginMB = FacesContext.getCurrentInstance().getApplication().evaluateExpressionGet(FacesContext.getCurrentInstance(), "#{loginMB}", LoginMB.class);
+        listaPropositoConsultas = cfgPropositoConsultaFacade.buscarPropositos();
         sede = loginMB.getCentroDeAtencionactual().getIdSede();
     }
 
@@ -301,7 +315,6 @@ public class CitasMB extends MetodosGenerales implements Serializable {
     //---------------------------METODOS DE GESTION DE CITAS-----------------------------
     //-----------------------------------------------------------------------------------
 
-
     public void guardarCita() throws ParseException {
         //System.out.println("Guardando cita ...");
         setFechaInit(turnoSeleccionado.getFecha());
@@ -396,7 +409,7 @@ public class CitasMB extends MetodosGenerales implements Serializable {
                 CitAutorizacionesServicios autorizacionServicio = autorizacionesServiciosFacade.buscarServicioPorAutorizacionDisponible(autorizacion.getIdAutorizacion(), idServicio);
                 if (autorizacionServicio != null) {
                     autorizacionServicio.setSesionesPendientes(autorizacionServicio.getSesionesPendientes() - 1);
-                    autorizacionesServiciosFacade.edit(autorizacionServicio);                    
+                    autorizacionesServiciosFacade.edit(autorizacionServicio);
                 }
 //                } else {
 //                    nuevaCita.setIdAutorizacion(null);
@@ -405,7 +418,20 @@ public class CitasMB extends MetodosGenerales implements Serializable {
                 nuevaCita.setIdAutorizacion(null);
             }
             nuevaCita.setTieneRegAsociado(false);
+            nuevaCita.setObservacion(observacion);
             citasFacade.create(nuevaCita);
+
+            //SE GUARDAN LOS PROPOSITOS DE CONSULTA DE LA CITA
+            for (CfgPropositoConsulta cfgPropositoConsulta : listaPropositoConsultas) {
+                if (cfgPropositoConsulta.isValor()) {
+                    CitPropositoConsulta citPropositoConsulta = new CitPropositoConsulta();
+                    citPropositoConsulta.setCitPropositoConsultaPK(new CitPropositoConsultaPK(nuevaCita.getIdCita(), cfgPropositoConsulta.getIdProposito()));
+                    citPropositoConsulta.setCfgPropositoConsulta(cfgPropositoConsulta);
+                    citPropositoConsulta.setCitCitas(nuevaCita);
+                    citPropositoConsulta.setValorCampo(true);
+                    citPropositoConsultaFacade.create(citPropositoConsulta);
+                }
+            }
 
             //modificando la tabla turnos: se incrementa el contador, dependiendo de la situacion el estado del turno puede llegar a ser false
             turnoSeleccionado.setContador(turnoSeleccionado.getContador() + 1);
@@ -636,6 +662,20 @@ public class CitasMB extends MetodosGenerales implements Serializable {
     //----------------------------------------------------------------------------------
     //------------------------METHODS AGENDA CITA---------------------------------------
     //----------------------------------------------------------------------------------
+    public void selectProposito() {
+//        System.out.println("--------");
+////        imprimirMensaje("Correcto", "Actualizado", null);
+//        for (CfgPropositoConsulta propositoConsulta : listaPropositoConsultas) {
+//            System.out.println(propositoConsulta.getDescripcion() + "-" + propositoConsulta.isValor());
+//        }
+//        System.out.println("--------");
+    }
+
+    public void updateTabla() {
+        System.out.println("Entro updateTabla");
+        RequestContext.getCurrentInstance().update("fstsch:IdTablaPropositoConsulta");
+    }
+
     private void seleccionarCita(long id) {
         citaSeleccionada = citasFacade.findCitasByTurno(id);
 
@@ -658,7 +698,7 @@ public class CitasMB extends MetodosGenerales implements Serializable {
             } else {
                 setRendBtnReservar(true);
             }
-            RequestContext.getCurrentInstance().update("fstsch:eventDetails");
+            RequestContext.getCurrentInstance().update("IdFormModalEventDialog");
             RequestContext.getCurrentInstance().execute("PF('eventDialog').show()");
 
         }
@@ -697,8 +737,30 @@ public class CitasMB extends MetodosGenerales implements Serializable {
         if (event.getTitle() != null) {
             String[] vector = event.getTitle().split(" - ");
             idTurno = vector[0];
+            observacion = null;
+            listaPropositoConsultas = cfgPropositoConsultaFacade.buscarPropositos();
             seleccionarCita(Long.parseLong(idTurno));
+            if (citaSeleccionada != null) {
+                observacion = citaSeleccionada.getObservacion();
+                List<CitPropositoConsulta> aux = citPropositoConsultaFacade.propositoConsultaByCita(citaSeleccionada);
+                if (aux != null && !aux.isEmpty()) {
+                    for (CitPropositoConsulta propositoConsulta : aux) {
+                        cargarPropositoConsultaToCita(propositoConsulta);
+                    }
+                }
+            }
         }
+    }
+
+    private void cargarPropositoConsultaToCita(CitPropositoConsulta citPpropositoConsulta) {
+        int indx = 0;
+        for (CfgPropositoConsulta cfgProposito : listaPropositoConsultas) {
+            if (cfgProposito.getIdProposito().equals(citPpropositoConsulta.getCfgPropositoConsulta().getIdProposito())) {
+                break;
+            }
+            indx++;
+        }
+        listaPropositoConsultas.get(indx).setValor(citPpropositoConsulta.getValorCampo());
     }
 
     //-----------------------------------------------------------------
@@ -1106,6 +1168,22 @@ public class CitasMB extends MetodosGenerales implements Serializable {
 
     public void setMaxTime(String maxTime) {
         this.maxTime = maxTime;
+    }
+
+    public List<CfgPropositoConsulta> getListaPropositoConsultas() {
+        return listaPropositoConsultas;
+    }
+
+    public void setListaPropositoConsultas(List<CfgPropositoConsulta> listaPropositoConsultas) {
+        this.listaPropositoConsultas = listaPropositoConsultas;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
     }
 
 }

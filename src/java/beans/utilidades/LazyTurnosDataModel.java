@@ -113,7 +113,7 @@ public class LazyTurnosDataModel extends LazyDataModel<CitTurnos> {
         } else {
             query += " AND fecha >= current_date";
         }
-        query += " AND estado = 'disponible'";
+//        query += " AND estado = 'disponible'";
 //        queryCount += ") AND estado = 'disponible' AND fecha >= current_date";
 //        if (filters.isEmpty()) {
         data = citTurnosFacade.findTurnosDisponiblesByPrestadoresLazyNative(query.concat(sql), offset, limit);

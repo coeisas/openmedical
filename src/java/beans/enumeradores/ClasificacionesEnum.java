@@ -68,6 +68,7 @@ public enum ClasificacionesEnum {
     Paquetes,
     Servicios,
     Sedes, //                           sedes que tiene la empresa
+    PropositoConsulta,
     NOVALUE;
 
     public static ClasificacionesEnum convert(String str) {

@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
         <title>Facelet Title</title>
         <script src="../recursos/js/calendario.js"/>
@@ -64,9 +65,20 @@
 
                     <p:outputLabel  rendered="#{agendaPrestadorMB.rend}" value="Autorizacion:"/>
                     <p:inputText rendered="#{agendaPrestadorMB.rend}" readonly="true" value="#{agendaPrestadorMB.citCita.idAutorizacion.numAutorizacion}" size="60"/>
-
+                </h:panelGrid>
+                <br/>
+                <p:panelGrid columns="4">
+                    <c:forEach items="#{agendaPrestadorMB.listaPropositoConsultas}" var="proposito">
+                        <p:outputLabel value="#{proposito.descripcion}"/>
+                        <p:selectBooleanCheckbox value="#{proposito.valor}">
+                            <p:ajax listener="#{agendaPrestadorMB.selectProposito}"/>
+                        </p:selectBooleanCheckbox>
+                    </c:forEach>
+                </p:panelGrid>
+                <br/>                
+                <h:panelGrid>
                     <p:row>
-                        <p:column colspan="2">
+                        <p:column>
                             <p:commandButton 
                                 id="btnHistoriaClinica"
                                 value = "&nbsp;"
