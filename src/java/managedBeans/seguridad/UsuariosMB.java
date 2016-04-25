@@ -167,7 +167,7 @@ public class UsuariosMB extends MetodosGenerales implements Serializable {
         cargoActual = "";
         observacion = "";
         usuarioVisible = true;
-        mostrarEnHistorias=true;
+        mostrarEnHistorias = true;
         fechaCreacion = new Date();
     }
 
@@ -235,7 +235,7 @@ public class UsuariosMB extends MetodosGenerales implements Serializable {
         cargoActual = usuarioSeleccionado.getCargoActual();
         observacion = usuarioSeleccionado.getObservacion();
         usuarioVisible = usuarioSeleccionado.getVisible();
-        mostrarEnHistorias=usuarioSeleccionado.getMostrarEnHistorias();
+        mostrarEnHistorias = usuarioSeleccionado.getMostrarEnHistorias();
         fechaCreacion = usuarioSeleccionado.getFechaCreacion();
         cambiaTipoUsuario();
         return 0;
@@ -381,19 +381,22 @@ public class UsuariosMB extends MetodosGenerales implements Serializable {
             nombreImagenReal = archivoFirma.getFileName();
             extension = nombreImagenReal.substring(nombreImagenReal.lastIndexOf("."), nombreImagenReal.length());
             nombreImagenEnTmp = "firmaUsuario" + loginMB.getUsuarioActual().getIdUsuario() + extension;
+            CfgImagenes nuevaImagen;
             if (usuarioSeleccionado.getFirma() != null) {//existe firma
                 moverArchivo(loginMB.getUrltmp() + nombreImagenEnTmp, loginMB.getUrlFirmas() + usuarioSeleccionado.getFirma().getId() + extension);
+                nuevaImagen = usuarioSeleccionado.getFirma();
+
             } else {//no existe firma
-                CfgImagenes nuevaImagen = new CfgImagenes();
+                nuevaImagen = new CfgImagenes();
                 imagenesFacade.create(nuevaImagen);//crearlo para que me autogenere el ID            
                 nombreImagenEnTmp = "firmaUsuario" + loginMB.getUsuarioActual().getIdUsuario() + extension;
                 moverArchivo(loginMB.getUrltmp() + nombreImagenEnTmp, loginMB.getUrlFirmas() + nuevaImagen.getId().toString() + extension);
-                nuevaImagen.setNombre(nombreImagenReal);
-                nuevaImagen.setNombreEnServidor(nuevaImagen.getId().toString() + extension);
-                nuevaImagen.setUrlImagen(loginMB.getBaseDeDatosActual() + "/firmas/" + nuevaImagen.getId().toString() + extension);
-                imagenesFacade.edit(nuevaImagen);
                 usuarioSeleccionado.setFirma(nuevaImagen);
             }
+            nuevaImagen.setNombre(nombreImagenReal);
+            nuevaImagen.setNombreEnServidor(nuevaImagen.getId().toString() + extension);
+            nuevaImagen.setUrlImagen(loginMB.getBaseDeDatosActual() + "/firmas/" + nuevaImagen.getId().toString() + extension);
+            imagenesFacade.edit(nuevaImagen);
         }
         if (archivoFoto != null || fotoTomadaWebCam) {//se cargo foto
             if (fotoTomadaWebCam) {//es por webCam
@@ -846,7 +849,7 @@ public class UsuariosMB extends MetodosGenerales implements Serializable {
 
     public void setMostrarEnHistorias(boolean mostrarEnHistorias) {
         this.mostrarEnHistorias = mostrarEnHistorias;
-    }    
+    }
 
     public String getTituloTabUsuarios() {
         return tituloTabUsuarios;
