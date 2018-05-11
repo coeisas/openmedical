@@ -169,7 +169,7 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
     private CitCitas citaActual = null;
 
     private boolean posibleModificarFecha;
-
+    private boolean confidencialRender= false;
     //---------------------------------------------------
     //----------------- FUNCIONES INICIALES -----------------------
     //---------------------------------------------------
@@ -2236,6 +2236,17 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
     private void cargarUltimoRegistro() {
         mostrarFormularioRegistroClinico();
         if (tipoRegistroClinicoActual != null) {//validacion particular para determinar si es "HISTORIA CLINICA PSIQUIATRIA" y asignar por defecto 
+            int idPerfil = loginMB.getUsuarioActual().getIdPerfil().getIdPerfil();
+            String  userMedico = loginMB.getUsuarioActual().getLoginUsuario();
+            try {
+                this.confidencialRender=false;
+                if(idPerfil==1)confidencialRender=true;
+                else if(null!=userMedico && userMedico.equals("csalcedo"))this.confidencialRender=true;
+            } catch (Exception e) {
+            }
+            
+                //validamos si el perfil es administrador o usuario claudia marcelo ("csalcedo")
+
             if (tipoRegistroClinicoActual.getIdTipoReg() == 5) {
                 estructuraCampos.setCampo0("17");//en este combo quede seleccionado PSIQUIATRIA CONTROL
             }
@@ -2924,5 +2935,15 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
     public boolean isPosibleModificarFecha() {
         return posibleModificarFecha;
     }
+
+    public boolean isConfidencialRender() {
+        return confidencialRender;
+    }
+
+    public void setConfidencialRender(boolean confidencialRender) {
+        this.confidencialRender = confidencialRender;
+    }
+    
+    
 
 }
