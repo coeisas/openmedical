@@ -2240,7 +2240,7 @@ public class HistoriasMB extends MetodosGenerales implements Serializable {
             String  userMedico = loginMB.getUsuarioActual().getLoginUsuario();
             try {
                 this.confidencialRender=false;
-                if(idPerfil==1)confidencialRender=true;
+                if(idPerfil==1 || idPerfil==2)confidencialRender=true;
                 else if(null!=userMedico && userMedico.equals("csalcedo"))this.confidencialRender=true;
             } catch (Exception e) {
             }
